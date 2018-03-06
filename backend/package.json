@@ -1,0 +1,16 @@
+{
+  "name": "fm",
+  "version": "1.0.0",
+  "description": "backend to fm",
+  "main": "server.js",
+  "scripts": {
+    "test": "test",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@angular/cli": "^1.7.2",
+    "express": "^4.16.2"
+  }
+}
