@@ -1,0 +1,12 @@
+<h1>Welcome to your dashboard</h1>
+<h3>Friends:</h3>
+<ul>
+	<li *ngFor="let friend of friends">
+		<a [routerLink]="['/profile',friend.name,true]">
+			<p>{{ friend.name }}</p>
+			<p>{{ friend.picture }}</p>
+		</a>
+	</li>
+</ul>
+
+<input type="submit" value="Search for new friends" routerLink="/search">
