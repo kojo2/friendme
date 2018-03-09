@@ -1,0 +1,10 @@
+step 1 - choose a side l,t,r,b
+step 2 - choose a word from list
+step 3 - count number of letters in word
+step 4 - take number of letters away from 10, then choose random number between 1 and result
+step 5 - add the letters to the array of taken spaces
+step 6 - choose next word and repeat steps
+step 7 - check if word is stealing a position by checking array of taken spaces for each letter in word
+step 8 - if it is overlapping then repeat to find somewhere else to put it.
+
+

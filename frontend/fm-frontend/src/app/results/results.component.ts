@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UsersService } from '../users.service';
 
 @Component({
   selector: 'app-results',
@@ -7,27 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ResultsComponent implements OnInit {
 
-results = [
-	{
-		name:'Matt',
-		distance: '15m'
-	},
-	{
-		name:'Fiona',
-		distance: '10m'
-	},
-	{
-		name:'Timothy',
-		distance: '25m'
-	}
-];
+  results;
 
 
-
-  constructor() { }
+  constructor(private usersService:UsersService) { }
 
   ngOnInit() {
-  	console.log("hello");
+  	this.results = this.usersService.findUsers();
   }
-
+  
 }

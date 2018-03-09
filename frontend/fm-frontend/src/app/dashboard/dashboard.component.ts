@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UsersService } from '../users.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -7,28 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DashboardComponent implements OnInit {
 
-friends = [
-	{
-		name:'Danny',
-		picture: 'http://imgpic.com/4lkjr4kjh0.jpg'
-	},
-	{
-		name:'Rebecca',
-		picture: 'http://imgpic.com/4lkjr4kjh0.jpg'
-	},
-	{
-		name:'Tina',
-		picture: 'http://imgpic.com/4lkjr4kjh0.jpg'
-	},
-	{
-		name:'Max',
-		picture: 'http://imgpic.com/4lkjr4kjh0.jpg'
-	}
-];
+	userId = 1;
+	friends;
 
-  constructor() { }
+  constructor(private usersService:UsersService) { }
 
   ngOnInit() {
+  	this.friends = this.usersService.findFriends(this.userId);
   }
 
 }

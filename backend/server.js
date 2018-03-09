@@ -52,3 +52,7 @@ get('results',results);
 app.listen(8080);
 
 console.log("app listening on 8080");
+
+var randomWords = require('random-words');
+
+console.log(randomWords(10));
