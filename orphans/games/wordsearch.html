@@ -1,3 +1,15 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	</head>
+	<body>
+		
+	</body>
+</html>
+
+
 <style>
 
 
@@ -9,7 +21,19 @@
 	text-align: center;
 	padding-top: 2px;
 	padding-bottom: 0px;
+
+	-webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
 }
+
+.highlighted {
+	background-color: yellow;
+}
+
 </style>
 
 <script>
@@ -25,36 +49,126 @@ var words = [ 'behavior',
   'quick',
   'during' ];	 
 
+var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-let direction = ChooseDirection();
+var usedWords = [];
 
-switch(direction){
-	case 0:
-		//top
-		// find a number between 1 and 10
-		let number = 
-		break;
-	case 1:
-		//right
-		break;
-	case 2:
-		//bottom
-		break;
-	case 3:
-		//left
-		break;
+var usedGridRefs = [];
+
+var currentWordIndex = 0;
+
+CreateBlocks();
+
+// beginning of main loop
+
+for(let k=0;k<words.length;k++){
+
+	let direction = ChooseDirection();
+
+	let gridRef = Math.round((Math.random()*99)+1);
+
+	let word;
+
+	word = words[currentWordIndex];
+
+
+	switch(direction){
+		case 0:
+			//right
+			//check if word length is going to fit
+			var endOfRow = Math.ceil((gridRef+1)/10)*10;
+			while ((gridRef+word.length)>endOfRow){
+				gridRef--;
+			}
+			for(let i=0;i<word.length;i++){
+				$("#block"+gridRef).html(word[i]);
+				if(usedGridRefs.indexOf(gridRef)==-1){
+					usedGridRefs.push(gridRef);
+					if(usedWords.indexOf(word)==-1){
+						usedWords.push(word);
+					}
+					$("#block"+gridRef).css({"background-color":"pink"});
+					gridRef++;
+				}
+			}
+			break;
+		case 1:
+			//left
+			var begOfRow = Math.ceil((gridRef-1)/10)*10;
+			while ((gridRef-word.length)<begOfRow){
+				gridRef++;
+			}
+			for(let i=0;i<word.length;i++){
+				$("#block"+gridRef).html(word[i]);
+				if(usedGridRefs.indexOf(gridRef)==-1){
+					usedGridRefs.push(gridRef);
+					if(usedWords.indexOf(word)==-1){
+						usedWords.push(word);
+					}
+					$("#block"+gridRef).css({"background-color":"pink"});
+					gridRef--;
+				}
+				
+			}
+			break;
+		case 2:
+			//up
+			let top = gridRef.toString()[1];
+			/*$("#block"+gridRef).css({"background-color":"red"});
+			$("#block"+top).css({"background-color":"blue"});*/
+			while ((gridRef-(word.length*10))<top){
+				gridRef+=10;
+			}
+			for(let i=0;i<word.length;i++){
+				$("#block"+gridRef).html(word[i]);
+				if(usedGridRefs.indexOf(gridRef)==-1){
+					usedGridRefs.push(gridRef);
+					if(usedWords.indexOf(word)==-1){
+						usedWords.push(word);
+					}
+					$("#block"+gridRef).css({"background-color":"pink"});
+					gridRef-=10;
+				}
+			}
+			break;
+		case 3:
+			//down
+			let bottom;
+			if(gridRef>10){
+				bottom = "9"+gridRef.toString()[1];
+			}else{
+				bottom = "9"+gridRef.toString();
+			}
+			while ((gridRef+(word.length*10))>bottom){
+				gridRef-=10;
+			}
+			for(let i=0;i<word.length;i++){
+				$("#block"+gridRef).html(word[i]);
+				if(usedGridRefs.indexOf(gridRef)==-1){
+					usedGridRefs.push(gridRef);
+					if(usedWords.indexOf(word)==-1){
+						usedWords.push(word);
+					}
+					$("#block"+gridRef).css({"background-color":"pink"});
+					gridRef+=10;
+				}
+			}
+			break;
+	}
+	
+	currentWordIndex++;
 }
-
-
 //ChooseNumber();
 
-var i=0;
-for(var y=0; y<10; y++){
-	for(var x=0;x<10;x++){
-		document.write("<div class='block'>A</div>");
-		i++
+function CreateBlocks(){
+	var i=0;
+	for(var y=0; y<10; y++){
+		for(var x=0;x<10;x++){
+			document.write("<div class='block' id='block"+i+"'>"+ChooseRandomLetter()+"</div>");
+			i++
+		}
+		document.write("<br>");
 	}
-	document.write("<br>");
 }
 
 function ChooseDirection(){
@@ -64,4 +178,102 @@ function ChooseDirection(){
 function ChooseNumber(){
 	alert(Math.round(Math.random()*9)+1);
 }
+
+function ChooseWord(){
+	word = words[Math.round(Math.random()*words.length)];
+	return word;
+}
+
+function ChooseRandomLetter(){
+	let index = Math.random()*25;
+	let letter = letters[Math.round(index)];
+	return letter;
+}
+
+var highlighting = false;
+var previousGridRef=0;
+var previousGridRefX = 0;
+var previousGridRefY = 0;
+
+endpoint = 1;
+
+var color = "yellow";
+
+$(".block").click(function(){
+	console.log("FIRING AGAIN");
+		let gridRef = parseInt($(this).attr("id").split("block")[1]);
+		HighlightSquare(gridRef);
+		let gridRefX = (gridRef%10)+1;
+		let gridRefY = Math.ceil(gridRef/10);
+		console.log("gridRef: "+gridRef+" - gridRefX: "+gridRefX+" - gridRefY: "+gridRefY);
+		if(endpoint==1){
+			previousGridRef = 0;
+			color="yellow";
+			endpoint=2;
+		}
+		else if(endpoint==2){
+			color="yellow";
+			endpoint=1;
+		}
+		if(previousGridRef>0){
+			let diff = gridRef - previousGridRef;
+			let diffX = gridRefX - previousGridRefX;
+			let diffY = gridRefY - previousGridRefY;
+			console.log("diffX: "+diffX+" - diffY: "+diffY);
+			if(diffX==0){
+				//legal vertical move
+				if(diffY>0){
+					for(var t=previousGridRef;t<gridRef;t+=10){
+						HighlightSquare(t);
+						console.log("HIGHLIGHTING gridRef: "+t);
+					}
+				}
+				else{
+					console.log("going up");
+					console.log("gridRef: "+gridRef+" - previousGridRef: "+previousGridRef);
+					for(let j=previousGridRef ; j>gridRef ; j-=10){
+						HighlightSquare(j);
+					}
+				}
+			}
+			if(diffY==0){
+				//legal horizontal move
+				if(diffX>0){
+					for(var t=previousGridRef;t<gridRef;t++){
+						HighlightSquare(t);
+						console.log("HIGHLIGHTING gridRef: "+t);
+					}
+				}
+				else{
+					console.log("gridRef: "+gridRef+" - previousGridRef: "+previousGridRef);
+					for(let j=previousGridRef ; j>gridRef ; j--){
+						HighlightSquare(j);
+					}
+				}
+			}
+			else if(diffX!=0 && diffY!=0){
+				//illegal move
+				console.log("illegal move");
+				
+			}
+
+			
+		}
+		previousGridRef = gridRef;
+		previousGridRefX = gridRefX;
+		previousGridRefY = gridRefY;
+		highlighting=true;
+	
+});
+
+
+function HighlightSquare(gridRef){
+	$("#block"+gridRef).addClass("highlighted");
+}
+
+
+
+
+
+
 </script>
