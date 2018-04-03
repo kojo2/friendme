@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { UsersService } from '../users.service';
+
 @Component({
   selector: 'login-page',
   templateUrl: './login-page.component.html',
@@ -7,13 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginPageComponent implements OnInit {
 
-  constructor() { }
+  constructor(private service:UsersService) { }
 
   ngOnInit() {
   }
 
-  login(){
-  	alert("logging in!");
+  submit(f){
+  	alert(this.service.findUser(f.value.username));
   }
 
 }

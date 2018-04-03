@@ -38,16 +38,16 @@
 
 <script>
 
-var words = [ 'behavior',
-  'army',
-  'by',
-  'thumb',
-  'travel',
-  'color',
-  'officer',
-  'brief',
-  'quick',
-  'during' ];	 
+var words = [ 'BEHAVIOUR',
+  'ARMY',
+  'BY',
+  'THUMB',
+  'TRAVEL',
+  'COLOUR',
+  'OFFICER',
+  'BRIEF',
+  'QUICK',
+  'DURING' ];	 
 
 var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -87,7 +87,7 @@ for(let k=0;k<words.length;k++){
 					if(usedWords.indexOf(word)==-1){
 						usedWords.push(word);
 					}
-					$("#block"+gridRef).css({"background-color":"pink"});
+					//$("#block"+gridRef).css({"background-color":"pink"});
 					gridRef++;
 				}
 			}
@@ -105,7 +105,7 @@ for(let k=0;k<words.length;k++){
 					if(usedWords.indexOf(word)==-1){
 						usedWords.push(word);
 					}
-					$("#block"+gridRef).css({"background-color":"pink"});
+					//$("#block"+gridRef).css({"background-color":"pink"});
 					gridRef--;
 				}
 				
@@ -126,7 +126,7 @@ for(let k=0;k<words.length;k++){
 					if(usedWords.indexOf(word)==-1){
 						usedWords.push(word);
 					}
-					$("#block"+gridRef).css({"background-color":"pink"});
+					//$("#block"+gridRef).css({"background-color":"pink"});
 					gridRef-=10;
 				}
 			}
@@ -149,7 +149,7 @@ for(let k=0;k<words.length;k++){
 					if(usedWords.indexOf(word)==-1){
 						usedWords.push(word);
 					}
-					$("#block"+gridRef).css({"background-color":"pink"});
+					//$("#block"+gridRef).css({"background-color":"pink"});
 					gridRef+=10;
 				}
 			}

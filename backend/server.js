@@ -1,7 +1,27 @@
 const express = require('express');
+const mongoose  = require('mongoose');
+const bodyParser = require('body-parser');
 const app = express();
 
+//mongoose.connect('mongodb://localhost/fm');
+
+//require('./Models/Users');
+
+
 app.use(express.json());
+
+// set up body parser middlware
+
+app.use(bodyParser.json());
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Allow CORS
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 function get(url,resp){
 	app.get('/'+url,(req,res)=>{
@@ -45,7 +65,14 @@ let friends = [
 
 get('','landing page');
 get('login','retrieving user');
-get('register','registering new user');
+//get('register','registering new user');
+
+app.post('/login/',function(req,res){
+	res.send("req.body.username = "+req.body.username);
+
+	// now we have the username being searched for we can go and try and find that user in the mongodb database
+	
+});
 get('friends',friends);
 get('results',results);
 

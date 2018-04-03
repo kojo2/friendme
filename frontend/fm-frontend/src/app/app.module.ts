@@ -1,6 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
+import { HttpService } from './http.service';
 
 import { AppComponent } from './app.component';
 import { LoginPageComponent } from './login-page/login-page.component';
@@ -10,6 +13,7 @@ import { ResultsComponent } from './results/results.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { ChatComponent } from './chat/chat.component';
 import {UsersService} from './users.service';
+import { RegisterComponent } from './register/register.component';
 
 
 @NgModule({
@@ -20,10 +24,13 @@ import {UsersService} from './users.service';
     SearchComponent,
     ResultsComponent,
     UserProfileComponent,
-    ChatComponent
+    ChatComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
+    FormsModule,
+    HttpModule,
     RouterModule.forRoot([
     	{ 
     		path:'',
@@ -48,10 +55,14 @@ import {UsersService} from './users.service';
     	{
     		path:'chat/:username',
     		component: ChatComponent
-    	}
+    	},
+        {
+            path:'register',
+            component: RegisterComponent
+        }
     ])
   ],
-  providers: [UsersService],
+  providers: [UsersService,HttpService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

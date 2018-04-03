@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { Http } from '@angular/http';
+
 
 @Injectable()
 export class UsersService {
@@ -7,7 +9,9 @@ export class UsersService {
 	results;
 	friends;
 
-  constructor() { }
+	response;
+
+  constructor(private http:Http) { }
 
   findUsers(){
 
@@ -50,5 +54,15 @@ export class UsersService {
 		}
 	];
 	return this.friends;
+  }
+
+  findUser(username){
+  	this.http.post('http://localhost:8080/login',username).subscribe((response)=>{
+  		console.log(response._body);
+  	});
+  }
+
+  createUser(){
+  	return "creating user";
   }
 }

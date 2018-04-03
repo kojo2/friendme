@@ -1,5 +1,8 @@
-<h1>Welcome to the landing page</h1>
-<h2>Please login</h2>
-<label>Username:</label><input type="text"><br>
-<label>Password:</label><input type="password"><br>
-<input type="submit" value="Go" routerLink="/dashboard">
+<form #f="ngForm" (ngSubmit)="submit(f)">
+	<h1>Welcome to the landing page</h1>
+	<h2>Please login</h2>
+	<label>Username:</label><input type="text" ngModel name="username" #username="ngModel"><br>
+	<label>Password:</label><input type="password"><br>
+	<input type="submit" value="Go"><br>
+	<input type="submit" value="Create a new account" routerLink="/register">
+</form>
