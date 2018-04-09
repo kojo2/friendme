@@ -73,6 +73,12 @@ app.post('/login/',function(req,res){
 	// now we have the username being searched for we can go and try and find that user in the mongodb database
 	
 });
+
+app.post('/register/',function(req,res){
+	var username = req.body.username;
+	var password = req.body.password;
+	res.send("now creating user on the server with username: "+username+" and password: "+password);
+});
 get('friends',friends);
 get('results',results);
 

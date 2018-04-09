@@ -30,7 +30,7 @@ export class RegisterComponent implements OnInit {
 
 	submit(f){
 		if(!this.userExists)
-			alert(this.service.createUser());
+			alert(this.service.createUser(f.value.username,f.value.password));
 		else
 			alert("there was a problem!");
 	}

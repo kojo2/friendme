@@ -58,11 +58,15 @@ export class UsersService {
 
   findUser(username){
   	this.http.post('http://localhost:8080/login',username).subscribe((response)=>{
-  		console.log(response._body);
+  		console.log(response);
   	});
   }
 
-  createUser(){
-  	return "creating user";
+  createUser(username,password){
+  	//return "creating user "+username+" with password: "+password;
+  	var params = [username,password];
+  	this.http.post('http://localhost:8080/register',params).subscribe((response)=>
+  		return "got to the server";
+  	});
   }
 }
