@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose  = require('mongoose');
 const bodyParser = require('body-parser');
+const users = require('./Models/users');
 const app = express();
 
 //mongoose.connect('mongodb://localhost/fm');
@@ -22,6 +23,61 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+	app.post('/login/',function(req,res){
+		var username = req.body.username;
+		var password = req.body.password;
+
+		console.log(username+" and "+password);
+
+		users.FindUserCheckPassword(username,password).then(
+			function(result){
+				if(result==null)
+					res.send({type:0,data:null});
+				else
+					res.send({type:1,data:result});
+			},
+			function(err){
+				res.send(err);
+			}
+		);	
+	});
+
+	app.post('/register/',function(req,res){
+		var username = req.body.username;
+		var password = req.body.password;
+
+		console.log(username+" and "+password);
+		
+		/*users.FindUser(username,password).then(function(result){
+			console.log("found user");
+		}, function(err){
+			console.log("Did not find user");
+		});*/
+
+		// DEV line for delete all documents in users collection - Just faster than compass!
+		if(username==null){
+			users.DeleteAll();
+			res.send("deleted everything");
+		}else{
+		users.FindUser(username,password).then(
+			function(result){
+				if(result==null){
+					// if user doesn't already exist then create them
+					users.CreateUser(username,password);
+					res.send("User created successfully");
+				}
+				else{
+					res.send("User already exists");
+				}
+			},
+			function(err){
+				res.send("there was an unspecified error");
+			}
+		);
+		}
+		
+		
+	});
 
 function get(url,resp){
 	app.get('/'+url,(req,res)=>{
@@ -67,18 +123,7 @@ get('','landing page');
 get('login','retrieving user');
 //get('register','registering new user');
 
-app.post('/login/',function(req,res){
-	res.send("req.body.username = "+req.body.username);
 
-	// now we have the username being searched for we can go and try and find that user in the mongodb database
-	
-});
-
-app.post('/register/',function(req,res){
-	var username = req.body.username;
-	var password = req.body.password;
-	res.send("now creating user on the server with username: "+username+" and password: "+password);
-});
 get('friends',friends);
 get('results',results);
 
@@ -88,4 +133,4 @@ console.log("app listening on 8080");
 
 var randomWords = require('random-words');
 
-console.log(randomWords(10));
+//console.log(randomWords(10));

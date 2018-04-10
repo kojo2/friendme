@@ -2,7 +2,10 @@
 	<h1>Welcome to the landing page</h1>
 	<h2>Please login</h2>
 	<label>Username:</label><input type="text" ngModel name="username" #username="ngModel"><br>
-	<label>Password:</label><input type="password"><br>
+	<label>Password:</label><input type="text" ngModel name="password" #password="ngModel"><br>
 	<input type="submit" value="Go"><br>
 	<input type="submit" value="Create a new account" routerLink="/register">
 </form>
+
+{{message}}
+

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { Http } from '@angular/http';
 
+import 'rxjs/add/operator/map';
+
 
 @Injectable()
 export class UsersService {
@@ -56,17 +58,14 @@ export class UsersService {
 	return this.friends;
   }
 
-  findUser(username){
-  	this.http.post('http://localhost:8080/login',username).subscribe((response)=>{
-  		console.log(response);
-  	});
+  findUser(username,password){
+  	let response = this.http.post('http://localhost:8080/login',{username:username,password:password});
+  	return response.map(response =>response.json());
   }
 
   createUser(username,password){
   	//return "creating user "+username+" with password: "+password;
-  	var params = [username,password];
-  	this.http.post('http://localhost:8080/register',params).subscribe((response)=>
-  		return "got to the server";
-  	});
+  	return this.http.post('http://localhost:8080/register',{username:username,password:password}).map(response => response.text());
+
   }
 }
