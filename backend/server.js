@@ -13,7 +13,7 @@ app.use(express.json());
 
 // set up body parser middlware
 
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -29,17 +29,10 @@ app.use(function(req, res, next) {
 
 		console.log(username+" and "+password);
 
-		users.FindUserCheckPassword(username,password).then(
-			function(result){
-				if(result==null)
-					res.send({type:0,data:null});
-				else
-					res.send({type:1,data:result});
-			},
-			function(err){
-				res.send(err);
-			}
-		);	
+		users.FindUserCheckPassword(username,password).then(function(result){
+			console.log(result);
+			res.send(result);
+		})
 	});
 
 	app.post('/register/',function(req,res){

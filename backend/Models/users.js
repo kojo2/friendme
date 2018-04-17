@@ -27,18 +27,7 @@ exports.FindUser = function(_username,_password){
 }
 
 exports.FindUserCheckPassword = function(_username,_password){
-	return User.findOne({username:_username},function(err,user){
-		if(err) return err;
-		return user;
-	}).then(function(result){
-		if(err) return err;
-		if(_password===user.password)
-			return result;
-		else
-			return null;
-	},function(err){
-		return err;
-	});
+	return User.findOne({username:_username,password:_password}).then(result=>result).catch("there was an error"});
 }
 
 exports.DeleteAll = function(){

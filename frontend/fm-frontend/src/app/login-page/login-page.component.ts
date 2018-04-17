@@ -21,15 +21,15 @@ export class LoginPageComponent implements OnInit {
 
   submit(f){
   	this.service.findUser(f.value.username,f.value.password).subscribe((response)=>{
-      console.log(response);
-  		if(response.type==0){
+     console.log(response);
+  		/*if(response.type==0){
   			this.message = "User not found";
   			this.user = {username:"",password:""};
   		}else if (response.type==1){
   			this.user = response.data;
-  			this.message = "";
+  			this.message = "found user";
   			console.log(this.user);
-  		}
+  		}*/
   	});
   }
 

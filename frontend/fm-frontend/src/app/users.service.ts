@@ -60,7 +60,7 @@ export class UsersService {
 
   findUser(username,password){
   	let response = this.http.post('http://localhost:8080/login',{username:username,password:password});
-  	return response.map(response =>response.json());
+  	return response.map(response =>response.text());
   }
 
   createUser(username,password){
