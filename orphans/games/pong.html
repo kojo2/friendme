@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	</head>
+	<body>
+		<p style="margin-left:40px;">High score: <span id="highScore"></span></p>
+		<p style="margin-left:40px;">Lives: <span id="lives"></span></p>
+		<p style="margin-left:40px;">Score: <span id="score"></span></p>
+		<canvas id="canvas" width="500px" height="600px">
+		</canvas>
+		<style>
+
+			canvas {
+				border:solid 1px black;
+			}
+
+			canvas:hover {
+				cursor:none;
+			}
+		</style>
+		<script>
+
+			var ws;
+			var canvas = document.getElementById("canvas");
+			var ctx = canvas.getContext('2d');
+			var canvasWidth = canvas.width;
+			var canvasHeight = canvas.height;
+			var paddle1X=0;
+			var paddle2X=0;
+			var ballX = canvasWidth/2;
+			var ballY=canvasHeight/2;
+			var ballDirX = 0;
+			var ballDirY = 1;
+			var ballSpeed=8;
+			var originalBallSpeed = ballSpeed;
+			var ballSize=10;
+			var lives = 10;
+			var frozen = true;
+			var score = 0;
+			var highScore=0;
+
+			var clientId=-1;
+
+			var paddle1Width = ballSize*10;
+			var paddle1Height = (canvasHeight/10)*9;
+			var paddle2Width = ballSize*10;
+			var paddle2Height = (canvasHeight/10)*1;
+
+			var syncing = false;
+		
+
+			jQuery("canvas").mousemove(function(e){
+				var oldpaddle1X = paddle1X;
+				paddle1X = e.clientX;
+				if(paddle1X>(canvasWidth-paddle1Width))
+					paddle1X=oldpaddle1X;
+			});
+
+			$("#lives").text(lives);
+
+			ConnectToServer();
+
+			function die(){
+				lives--;
+				$("#lives").text(lives);	
+				//paddle1Width = (canvasWidth/8)+((10-lives)*10);
+				ballSpeed--;
+				if(clientId=="1")
+				{
+					ballDirX = Math.round(Math.random());
+				}	
+				if(score>highScore){
+					highScore=score;
+					$("#highScore").text(Math.round(highScore));
+				}
+
+				score=0;
+
+			}
+			
+			//setInterval(frame,100);
+			window.requestAnimationFrame(frame);
+			function frame(){
+				if(!frozen)
+					score+=0.01;
+				$("#score").text(Math.floor(score));
+				switch(ballDirX){
+					case 0:
+						ballX-=ballSpeed;
+						break;
+					case 1:
+						ballX+=ballSpeed;
+						break;
+				}
+				switch(ballDirY){
+					case 0:
+						ballY-=ballSpeed;
+						break;
+					case 1:
+						ballY+=ballSpeed;
+						break;
+				}
+				if(ballX<(ballSize+3)){
+					ballDirX=1;
+				}
+				if(ballX>canvasWidth-(ballSize+4)){
+					ballDirX=0;
+				}
+				if(ballY>canvasHeight-(ballSize+3)){
+					// we lose
+					frozen = true;
+					ballSpeed=0;
+					die();
+				}
+				if(ballY<(ballSize+3)){
+					frozen = true;
+					ballSpeed=0;
+					die();
+				}
+
+				if(frozen && clientId=="1"){
+					ballX=paddle1X+(paddle1Width/2);
+					ballY=paddle1Height-ballSize;
+					$("canvas").click(function(){ballSpeed=originalBallSpeed;frozen=false;ballDirY=0});
+				}
+
+				
+					ballSpeed+=0.001;
+				
+				
+				//check collision between paddle1 and ball
+				if(ballX>paddle1X && ballX<(paddle1X+paddle1Width) && ballY>(paddle1Height-(ballSize+4)) && ballY<paddle1Height){
+					//collision
+					if(ballDirY==1){
+						ballDirY=0;
+					}else{
+						ballDirY=1;
+					}
+				}
+
+				if(ballX>paddle2X && ballX<(paddle2X+paddle2Width) && ballY>(paddle2Height-(ballSize+4)) && ballY<paddle2Height){
+					//collision
+					if(ballDirY==1){
+						ballDirY=0;
+					}else{
+						ballDirY=1;
+					}
+				}
+
+				ctx.clearRect(0,0,canvas.width,canvas.height);
+				paddle1.draw();
+				paddle2.draw();
+				ball.draw();
+				if(syncing)
+					SendToServer();
+				window.requestAnimationFrame(frame);
+			}
+
+			var paddle1 = {
+				draw: function(){
+					ctx.beginPath();
+					ctx.moveTo(paddle1X,paddle1Height);
+					ctx.lineTo(paddle1X+paddle1Width,paddle1Height);
+					ctx.stroke();
+				}
+			}
+
+			var paddle2 = {
+				draw: function(){
+					ctx.beginPath();
+					ctx.moveTo(paddle2X,paddle2Height);
+					ctx.lineTo(paddle2X+paddle2Width,paddle2Height);
+					ctx.stroke();
+				}
+			}
+
+			var ball = {
+				draw: function(){
+					ctx.beginPath();
+					ctx.arc(ballX,ballY,ballSize,0,Math.PI*2,true);
+					ctx.fillStyle="red";
+					ctx.fill();
+					ctx.stroke();
+				}
+			}
+
+			function UpdateFromServer(data){
+				data = JSON.parse(data);
+				if(clientId=="1"){
+					//paddle2X = canvasWidth-paddle2Width-data.paddle2.positionX;
+					paddle2X = (canvasWidth-paddle1Width)-data.paddle2.positionX;
+					ballX = data.ball.positionX;
+					//paddle2Height = paddle2.positionY;
+					ballY = data.ball.positionY;
+					
+				}else{
+					paddle2X = (canvasWidth-paddle1Width)-data.paddle1.positionX;
+					//paddle2Height = canvasWidth-data.paddle2.positionY;
+
+					//ballX = canvasWidth-ballSize-data.ball.positionX;
+					//ballY = canvasWidth-ballSize-data.ball.positionY;
+					ballX = (canvasWidth-ballSize)-data.ball.positionX;
+					ballY = (canvasHeight-ballSize)-data.ball.positionY;
+				}
+				console.log(paddle2X);
+				//console.log(data);
+			}
+
+			setTimeout(function(){syncing=true;},1000);
+
+			function SendToServer(){
+				// if we are main master server we control the ball position
+				if(clientId==="1") {
+					var data = {
+						dataType:1,
+						paddle1X:paddle1X,
+						paddle1Y:paddle1Height,
+						ballX:ballX,
+						ballY:ballY,
+						ballDirX:ballDirX,
+						ballDirY:ballDirY,
+						ballSpeed:ballSpeed
+					}
+					ws.send(JSON.stringify(data));
+				}else{
+				// if we are not we don't
+					var data = {
+						dataType:2,
+						paddle1X:paddle1X
+					}
+					ws.send(JSON.stringify(data));
+				}	
+
+			}
+
+			function ConnectToServer(){
+				ws = new WebSocket('ws://localhost:1234','echo-protocol');
+			}
+
+			ws.addEventListener('message',function(e){
+				var msg = e.data;
+				if(msg.indexOf("id")>-1){
+					clientId = msg.split("id:")[1];
+					//alert("My id is: "+clientId);
+				}else{
+					// update everything
+					UpdateFromServer(msg);
+				}
+			});
+
+		
+			
+		</script>
+	</body>
+</html>

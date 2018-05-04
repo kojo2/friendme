@@ -1,0 +1,28 @@
+Name:<input id="name"></input><br><br>
+<input id="message"></input><br>
+<input type="submit" value="Send" onClick="Send()">
+
+<div id="chat-log"></div>
+<script>
+	document.getElementById("message").value="";
+
+	document.getElementById("message").addEventListener('keydown',function(e){
+		if(e.keyCode == 13)
+			Send();
+	});	
+
+	var ws = new WebSocket('ws://localhost:1234','echo-protocol');
+
+	function Send(){
+		var _message = document.getElementById("message").value;
+		var _name = document.getElementById("name").value;
+		var packet = {message:_message,name:_name};
+		ws.send(JSON.stringify(packet));
+		document.getElementById("message").value="";
+	}
+	
+	ws.addEventListener('message',function(e){
+		var msg = e.data;
+		document.getElementById("chat-log").innerHTML+="<br>"+msg;
+	})
+</script>

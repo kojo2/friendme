@@ -1,0 +1,14 @@
+4/5/18
+
+x - do server side session matching
+x - do websockets data transfer - live, no polling, subscribe/event based - one browser
+x - implement browser-server-browser transfer
+resources: http://codular.com/node-web-sockets
+once working insert into pong
+attach pong to chat facility
+
+
+3/4/18
+
+sessions with mongostore
+caching

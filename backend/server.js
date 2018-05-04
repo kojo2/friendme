@@ -2,7 +2,12 @@ const express = require('express');
 const mongoose  = require('mongoose');
 const bodyParser = require('body-parser');
 const users = require('./Models/users');
+const webSocket = require('websocket');
+
 const app = express();
+
+var WebSocketServer = webSocket.server;
+var http = require('http');
 
 //mongoose.connect('mongodb://localhost/fm');
 
@@ -30,7 +35,7 @@ app.use(function(req, res, next) {
 		console.log(username+" and "+password);
 
 		users.FindUserCheckPassword(username,password).then(function(result){
-			console.log(result);
+			console.log(res);
 			res.send(result);
 		})
 	});

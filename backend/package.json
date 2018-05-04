@@ -12,6 +12,8 @@
   "dependencies": {
     "@angular/cli": "^1.7.2",
     "express": "^4.16.2",
-    "random-words": "^1.0.0"
+    "random-words": "^1.0.0",
+    "websocket": "^1.0.26",
+    "ws": "^5.1.1"
   }
 }
