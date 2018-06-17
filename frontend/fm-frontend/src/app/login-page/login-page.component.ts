@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { UsersService } from '../users.service';
 
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'login-page',
@@ -14,7 +16,7 @@ export class LoginPageComponent implements OnInit {
 
 	user;
 
-  constructor(private service:UsersService) { }
+  constructor(private service:UsersService, private router:Router) { }
 
   ngOnInit() {
   }
@@ -22,14 +24,14 @@ export class LoginPageComponent implements OnInit {
   submit(f){
   	this.service.findUser(f.value.username,f.value.password).subscribe((response)=>{
      console.log(response);
-  		/*if(response.type==0){
-  			this.message = "User not found";
-  			this.user = {username:"",password:""};
-  		}else if (response.type==1){
-  			this.user = response.data;
-  			this.message = "found user";
-  			console.log(this.user);
-  		}*/
+
+      if(response=="true"){
+        alert("yeah baby!");
+        this.router.navigate(['dashboard']);
+      }
+      else{
+        alert("couldn't find user!");
+       }
   	});
   }
 

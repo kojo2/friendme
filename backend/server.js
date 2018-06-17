@@ -3,6 +3,9 @@ const mongoose  = require('mongoose');
 const bodyParser = require('body-parser');
 const users = require('./Models/users');
 const webSocket = require('websocket');
+var cookieParser = require('cookie-parser');
+var expressSession = require('express-session');
+var mongoStore = require('connect-mongo')({session:expressSession});
 
 const app = express();
 
@@ -22,6 +25,9 @@ app.use(express.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(expressSession({store: new mongoStore({ mongooseConnection: mongoose.connection}),secret:'dsjfaq3iojrmfsa',cookie : {maxAge:60*60*1000}}));
+
+
 // Allow CORS
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -34,10 +40,31 @@ app.use(function(req, res, next) {
 
 		console.log(username+" and "+password);
 
-		users.FindUserCheckPassword(username,password).then(function(result){
-			console.log(res);
-			res.send(result);
+		users.FindUserCheckPassword(username,password).then(function(user){
+			if(user!=false){
+				req.session.regenerate(function(){
+					req.session.user = user.id;
+					req.session.username = user.username;
+					req.session.msg = 'Authenticated as '+user.username;
+					console.log("user logged in is: "+req.session.user);
+					res.send("true");
+				});
+			}
+			else{
+				console.log("couldn't find user");
+				res.send("false");
+			}
+			console.log(user);
+			//res.send(result);
 		})
+	});
+
+
+	app.get('/friends',function(req,res){
+		console.log(req.body.userid+" requested their friends list");	
+		users.FindFriendsForUser(req.body.userid).then(function(friendList){
+			res.send(friendList);
+		});
 	});
 
 	app.post('/register/',function(req,res){
@@ -76,6 +103,11 @@ app.use(function(req, res, next) {
 		
 		
 	});
+
+	app.get('/session',function(req,res){
+		console.log(req.session.id);
+		res.send(req.session.id);
+	})
 
 function get(url,resp){
 	app.get('/'+url,(req,res)=>{
@@ -122,7 +154,6 @@ get('login','retrieving user');
 //get('register','registering new user');
 
 
-get('friends',friends);
 get('results',results);
 
 app.listen(8080);

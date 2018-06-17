@@ -55,7 +55,9 @@ export class UsersService {
 			picture: 'http://imgpic.com/4lkjr4kjh0.jpg'
 		}
 	];
-	return this.friends;
+	let response = this.http.get('http://localhost:8080/friends');
+	/*console.log(response.map(response => response.text()));*/
+	alert(response);
   }
 
   findUser(username,password){
@@ -68,4 +70,6 @@ export class UsersService {
   	return this.http.post('http://localhost:8080/register',{username:username,password:password}).map(response => response.text());
 
   }
+
+
 }
