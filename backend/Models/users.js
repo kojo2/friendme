@@ -17,7 +17,9 @@ exports.CreateUser = function(_username,_password){
 	user.save(function(err){
 		if(err) 
 			return err;
+			console.log("there was an error: "+err);
 		//saved!
+		console.log("saved user")
 	});
 }
 
@@ -44,5 +46,15 @@ exports.DeleteAll = function(){
 exports.FindFriendsForUser = function(_userid){
 	return User.findOne({_id:_userid}).then(function(user){
 		return user.friendList;
+	});
+}
+
+exports.AddFriendForUser = function(_userid,fuserId){
+	User.findOne({_id:_userid}).then(function(err,user){
+		let fl = user.friendList+userId;
+		user.set('friendList',fl);
+		user.save(function(err){
+			return true;
+		});
 	});
 }

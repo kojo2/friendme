@@ -104,6 +104,11 @@ app.use(function(req, res, next) {
 		
 	});
 
+	app.get('/friends/add',function(req,res){
+		if(users.AddFriendForUser(req.session.id,req.body.fid))
+			res.send("friend added");
+	});
+
 	app.get('/session',function(req,res){
 		console.log(req.session.id);
 		res.send(req.session.id);
