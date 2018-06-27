@@ -60,7 +60,7 @@ export class UsersService {
   	return this.http.post('http://localhost:8080/friendRequest',{userId:id,username:name}).map(response=>response.text());
   }
   getFriendRequests(){
-  	return this.http.get('http://localhost:8080/friendRequests').map(response=>response.json());
+  	return this.http.get('http://localhost:8080/friendRequests').map(response=>response.text());
   }
 
 

@@ -38,7 +38,7 @@ app.use(function(req, res, next) {
 		var username = req.body.username;
 		var password = req.body.password;
 
-		console.log(username+" and "+password);
+		//console.log(username+" and "+password);
 
 		users.FindUserCheckPassword(username,password).then(function(user){
 			if(user!=false){
@@ -46,22 +46,22 @@ app.use(function(req, res, next) {
 					req.session.user = user.id;
 					req.session.username = user.username;
 					req.session.msg = 'Authenticated as '+user.username;
-					console.log("user logged in is: "+req.session.user);
+					//console.log("user logged in is: "+req.session.user);
 					res.send("true");
 				});
 			}
 			else{
-				console.log("couldn't find user");
+				//console.log("couldn't find user");
 				res.send("false");
 			}
-			console.log(user);
+			//console.log(user);
 			//res.send(result);
 		})
 	});
 
 
 	app.get('/friends',function(req,res){
-		console.log(req.body.userid+" requested their friends list");	
+		//console.log(req.body.userid+" requested their friends list");	
 		users.FindFriendsForUser(req.body.userid).then(function(friendList){
 			res.send(friendList);
 		});
@@ -71,7 +71,7 @@ app.use(function(req, res, next) {
 		var username = req.body.username;
 		var password = req.body.password;
 
-		console.log(username+" and "+password);
+		//console.log(username+" and "+password);
 		
 		/*users.FindUser(username,password).then(function(result){
 			console.log("found user");
@@ -110,19 +110,19 @@ app.use(function(req, res, next) {
 	});
 
 	app.get('/session',function(req,res){
-		console.log(req.session.id);
+		//console.log(req.session.id);
 		res.send(req.session.id);
 	})
 
 	app.get('/users',function(req,res){
 		users.FindAllOtherUsers().then(function(data){
-			console.log(data);
+			//console.log(data);
 			res.json(data);
 		});
 	});
 
 	app.get('/user/:userid',function(req,res){
-		console.log("trying to get profile for user id: "+req.params.userid);
+		//console.log("trying to get profile for user id: "+req.params.userid);
 		users.ShowPublicInformationForUser(req.params.userid).then(result=>res.send(result));
 	});
 	
@@ -132,7 +132,8 @@ app.use(function(req, res, next) {
 	});
 
 	app.get('/friendRequests',function(req,res){
-		users.GetFriendRequests(req.session.user).then(response=>res.json(response.friendRequests))
+		console.log(req.session);
+		//users.GetFriendRequests(req.session.user).then(response=>res.json(response.friendRequests))
 	});
 
 	//app.get('/')
