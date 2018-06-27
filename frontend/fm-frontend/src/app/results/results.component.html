@@ -1,9 +1,10 @@
 <h1>Results:</h1>
 <ul>
 	<li *ngFor="let result of results">
-		<a [routerLink]="['/profile',result.name,false]">
-			<p>{{ result.name }}</p>
+		<a [routerLink]="['/profile',result._id,result.username,f]">
+			<p>{{ result.username }}</p>
 			<p>{{ result.distance}} miles away</p>
 		</a>
-	</li>
-</ul>
+	</li> 
+</ul> 
+

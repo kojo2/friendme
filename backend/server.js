@@ -114,52 +114,39 @@ app.use(function(req, res, next) {
 		res.send(req.session.id);
 	})
 
+	app.get('/users',function(req,res){
+		users.FindAllOtherUsers().then(function(data){
+			console.log(data);
+			res.json(data);
+		});
+	});
+
+	app.get('/user/:userid',function(req,res){
+		console.log("trying to get profile for user id: "+req.params.userid);
+		users.ShowPublicInformationForUser(req.params.userid).then(result=>res.send(result));
+	});
+	
+	app.post('/friendRequest',function(req,res){
+		users.CreateFriendRequest(req.body.userId,req.session.user,req.session.username).then(response=>res.send(response));
+		
+	});
+
+	app.get('/friendRequests',function(req,res){
+		users.GetFriendRequests(req.session.user).then(response=>res.json(response.friendRequests))
+	});
+
+	//app.get('/')
+
 function get(url,resp){
 	app.get('/'+url,(req,res)=>{
 		res.send(resp);
 	});
 }
 
-let results = [
-	{
-		name:'Matt',
-		distance: '15m'
-	},
-	{
-		name:'Fiona',
-		distance: '10m'
-	},
-	{
-		name:'Timothy',
-		distance: '25m'
-	}
-];
-
-let friends = [
-	{
-		name:'Danny',
-		picture: 'http://imgpic.com/4lkjr4kjh0.jpg'
-	},
-	{
-		name:'Rebecca',
-		picture: 'http://imgpic.com/4lkjr4kjh0.jpg'
-	},
-	{
-		name:'Tina',
-		picture: 'http://imgpic.com/4lkjr4kjh0.jpg'
-	},
-	{
-		name:'Max',
-		picture: 'http://imgpic.com/4lkjr4kjh0.jpg'
-	}
-];
-
 get('','landing page');
 get('login','retrieving user');
 //get('register','registering new user');
 
-
-get('results',results);
 
 app.listen(8080);
 

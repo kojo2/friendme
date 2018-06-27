@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const autoIncrement = require('mongoose-auto-increment');
 
-const schema = new mongoose.Schema({username: 'string', password:'string', friendList:[{userId:Number,username:String}]});
+const schema = new mongoose.Schema({username: 'string', password:'string', friendList:[{userId:Number,username:String}],friendRequests:[{userid:Number,username:String}]});
 
 const User = mongoose.model('User',schema);
 
@@ -34,6 +34,10 @@ exports.FindUser = function(_username,_password){
 	});
 }
 
+exports.FindAllOtherUsers = function(){
+	return User.find();
+}
+
 exports.FindUserCheckPassword = function(_username,_password){	
 	/*return User.findOne({username:_username,password:_password}).then(result=>result).catch("there was an error");*/
 	return User.findOne({username:_username,password:_password}).then((result)=>{if(result.password==_password) {return result} else {return false}}).catch((err)=>{return false});
@@ -51,10 +55,30 @@ exports.FindFriendsForUser = function(_userid){
 
 exports.AddFriendForUser = function(_userid,fuserId){
 	User.findOne({_id:_userid}).then(function(err,user){
-		let fl = user.friendList+userId;
+		/*let fl = user.friendList.push({userId,username
 		user.set('friendList',fl);
 		user.save(function(err){
 			return true;
-		});
+		});*/
+	});
+}
+
+exports.ShowPublicInformationForUser = function(userid){
+	return User.findOne({_id:userid});
+}
+
+// userId is the user that requested the friendship
+exports.CreateFriendRequest = function(destinationId,userId,username){
+	return User.update(
+	    { _id: destinationId }, 
+	    { $push: { friendRequests: {userid:userId,username:username} } }
+	);
+}
+
+exports.GetFriendRequests = function(userId){
+	return User.findOne({_id:userId}).then(function(err,user){
+		if(err)
+			return err;
+		return user.friendRequests;
 	});
 }

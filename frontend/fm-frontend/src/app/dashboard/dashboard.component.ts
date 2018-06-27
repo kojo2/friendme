@@ -10,11 +10,13 @@ export class DashboardComponent implements OnInit {
 
 	userId = 1;
 	friends;
+	friendRequests;
 
   constructor(private usersService:UsersService) { }
 
   ngOnInit() {
   	this.friends = this.usersService.findFriends(this.userId);
+  	this.usersService.getFriendRequests().subscribe(results=>console.log(results));
   }
 
 }

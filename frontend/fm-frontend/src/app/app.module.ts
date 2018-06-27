@@ -49,7 +49,7 @@ import { RegisterComponent } from './register/register.component';
     		component: ResultsComponent
     	},
     	{
-    		path:'profile/:username/:friend',
+    		path:'profile/:_id/:username/:friend',
     		component: UserProfileComponent
     	},
     	{

@@ -8,13 +8,15 @@ import { UsersService } from '../users.service';
 })
 export class ResultsComponent implements OnInit {
 
-  results;
+  results: any[];
 
+  f="f";
 
-  constructor(private usersService:UsersService) { }
+  constructor(private usersService:UsersService) {
+   }
 
   ngOnInit() {
-  	this.results = this.usersService.findUsers();
+  	this.usersService.findUsers().subscribe(results=>this.results = results);
   }
   
 }

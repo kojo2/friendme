@@ -10,30 +10,16 @@ export class UsersService {
 
 	results;
 	friends;
-
+	textd;
 	response;
 
   constructor(private http:Http) { }
 
   findUsers(){
 
-  	this.results = [
-		{
-			name:'Matt',
-			distance: '15m'
-		},
-		{
-			name:'Fiona',
-			distance: '10m'
-		},
-		{
-			name:'Timothy',
-			distance: '25m'
-		}
-	];
-
-
-  	return this.results;
+  	return this.http.get('http://localhost:8080/users').map(response=>response.json());
+  	
+ 	
   }
 
   findFriends(userId){
@@ -57,7 +43,7 @@ export class UsersService {
 	];
 	let response = this.http.get('http://localhost:8080/friends');
 	/*console.log(response.map(response => response.text()));*/
-	alert(response);
+	
   }
 
   findUser(username,password){
@@ -68,8 +54,15 @@ export class UsersService {
   createUser(username,password){
   	//return "creating user "+username+" with password: "+password;
   	return this.http.post('http://localhost:8080/register',{username:username,password:password}).map(response => response.text());
-
   }
+  //did stands for destination user id (who is the request going to?)
+  createFriendRequest(id,name){
+  	return this.http.post('http://localhost:8080/friendRequest',{userId:id,username:name}).map(response=>response.text());
+  }
+  getFriendRequests(){
+  	return this.http.get('http://localhost:8080/friendRequests').map(response=>response.json());
+  }
+
 
 
 }

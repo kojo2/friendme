@@ -26,7 +26,6 @@ export class LoginPageComponent implements OnInit {
      console.log(response);
 
       if(response=="true"){
-        alert("yeah baby!");
         this.router.navigate(['dashboard']);
       }
       else{
