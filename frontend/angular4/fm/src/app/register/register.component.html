@@ -1,0 +1,8 @@
+<form #f="ngForm" (ngSubmit)="submit(f)" (change)="change(f)">
+	<label>Username:</label><input ngModel name="username" #username="ngModel"><br>
+	<label style="color:red" *ngIf="userExists">Username already exists!</label><br>
+	<label>Password:</label>
+	<input name="password" ngModel #password="ngModel">
+	<input type="submit">
+	{{ message }}
+</form>

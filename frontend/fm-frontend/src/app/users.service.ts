@@ -61,7 +61,11 @@ export class UsersService {
   	return this.http.post('http://localhost:8080/friendRequest',{userId:id,username:name}).map(response=>response.text());
   }
   getFriendRequests(){
-  	return this.http.get('http://localhost:8080/friendRequests').map(response=>response.text());
+  	let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('X-CSRF-Token', token.token);
+  	let options = new RequestOptions({ headers: headers, withCredentials: true });
+  	return this.http.get('http://localhost:8080/friendRequests',options).map(response=>response.text());
   }
 
 

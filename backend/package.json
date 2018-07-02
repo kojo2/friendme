@@ -11,7 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "@angular/cli": "^1.7.2",
+    "connect-mongo": "^2.0.1",
+    "cors": "^2.8.4",
     "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "mongoose-auto-increment": "^5.0.1",
     "random-words": "^1.0.0",
     "websocket": "^1.0.26",
     "ws": "^5.1.1"

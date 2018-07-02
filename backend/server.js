@@ -5,11 +5,14 @@ const users = require('./Models/users');
 const webSocket = require('websocket');
 var expressSession = require('express-session');
 var mongoStore = require('connect-mongo')({session:expressSession});
+//const cors = require('cors');
 
 const app = express();
 
+//app.use(cors());
+
 var WebSocketServer = webSocket.server;
-var http = require('http');
+
 
 //mongoose.connect('mongodb://localhost/fm');
 
@@ -20,7 +23,7 @@ app.use(express.json());
 
 // set up body parser middlware
 
-//app.use(bodyParser.json());
+//app.use(bodyyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -29,8 +32,9 @@ app.use(expressSession({store: new mongoStore({ mongooseConnection: mongoose.con
 
 // Allow CORS
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "http://localhost:4200");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Credentials","true");
   next();
 });
 
@@ -133,7 +137,7 @@ app.use(function(req, res, next) {
 
 	app.get('/friendRequests',function(req,res){
 		console.log(req.session);
-		//users.GetFriendRequests(req.session.user).then(response=>res.json(response.friendRequests))
+		users.GetFriendRequests(req.session.user).then(response=>res.json(response.friendRequests))
 	});
 
 	//app.get('/')
@@ -144,7 +148,13 @@ function get(url,resp){
 	});
 }
 
-get('','landing page');
+app.get('/',function(req,res){
+	let struc = {
+		man:"bob",
+		dog:"Yappie"
+	};
+	res.json(struc);
+})
 get('login','retrieving user');
 //get('register','registering new user');
 
