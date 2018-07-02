@@ -11,9 +11,9 @@ import { SearchComponent } from './search/search.component';
 import { ResultsComponent } from './results/results.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { ChatComponent } from './chat/chat.component';
-import {UsersService} from './users.service';
+import { UsersService } from './users.service';
 import { RegisterComponent } from './register/register.component';
-
+import { HttpService } from './http.service';
 
 @NgModule({
   declarations: [
@@ -62,7 +62,7 @@ import { RegisterComponent } from './register/register.component';
         }
     ])
   ],
-  providers: [UsersService],
+  providers: [UsersService,HttpService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

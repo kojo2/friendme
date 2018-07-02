@@ -1,11 +1,19 @@
 <h1>Welcome to your dashboard</h1>
-<!--<p>You have {{ friendRequests.length }} friendRequests</p>-->
+<div *ngIf="friendRequests?.length > 0">
+	<p>You have {{ friendRequests.length }} friendRequests</p>
+	<ul>
+		<li *ngFor="let friendRequest of friendRequests">
+			<a [routerLink]="['/profile',friendRequest.userid,friendRequest.username,'r']">
+				{{ friendRequest.username }}
+			</a>
+		</li>
+	</ul>
+</div>
 <h3>Friends:</h3>
 <ul>
 	<li *ngFor="let friend of friends">
 		<a [routerLink]="['/profile',friend.name,true]">
-			<p>{{ friend.name }}</p>
-			<p>{{ friend.picture }}</p>
+			<p>{{ friend.username }}</p>
 		</a>
 	</li>
 </ul>

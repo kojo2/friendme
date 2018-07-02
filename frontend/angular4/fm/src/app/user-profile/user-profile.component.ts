@@ -12,6 +12,7 @@ export class UserProfileComponent implements OnInit {
   name = "";
   friend = false;
   id;
+  friendRequested = false;
   constructor(private route: ActivatedRoute, private service:UsersService) {
   }
 
@@ -20,10 +21,15 @@ export class UserProfileComponent implements OnInit {
       this.id = params.get('_id');
   		this.name = params.get('username');
   		this.friend = (params.get('friend')=="t");
+      this.friendRequested = (params.get('friend')=='r');
   	})
   }
 
   friendRequest(){
      this.service.createFriendRequest(this.id,this.name).subscribe(response=>alert(response));
+  }
+
+  acceptFriendRequest(){
+    this.service.acceptFriendRequest(this.id,this.name).subscribe(response=>console.log(response));
   }
 }

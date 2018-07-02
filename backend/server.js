@@ -66,9 +66,11 @@ app.use(function(req, res, next) {
 
 	app.get('/friends',function(req,res){
 		//console.log(req.body.userid+" requested their friends list");	
-		users.FindFriendsForUser(req.body.userid).then(function(friendList){
-			res.send(friendList);
-		});
+		console.log(req.session);
+			users.FindFriendsForUser(req.session.user).then(function(friendList){
+				res.send(friendList);
+			});
+		
 	});
 
 	app.post('/register/',function(req,res){
@@ -135,9 +137,17 @@ app.use(function(req, res, next) {
 		
 	});
 
+	app.post('/friendRequest/accept',function(req,res){
+		users.DeleteFriendRequest(req.body.userId,req.session.user);
+		users.AddFriendForUser(req.body.userId,req.session.user);
+		users.AddFriendForUser(req.session.user,req.body.userId);
+		res.send("accepted friend!");
+	});
+
 	app.get('/friendRequests',function(req,res){
 		console.log(req.session);
-		users.GetFriendRequests(req.session.user).then(response=>res.json(response.friendRequests))
+		if(req.session.user)
+			users.GetFriendRequests(req.session.user).then(response=>res.json(response.friendRequests))
 	});
 
 	//app.get('/')

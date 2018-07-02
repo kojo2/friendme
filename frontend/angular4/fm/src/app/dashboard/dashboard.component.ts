@@ -15,8 +15,11 @@ export class DashboardComponent implements OnInit {
   constructor(private usersService:UsersService) { }
 
   ngOnInit() {
-  	this.friends = this.usersService.findFriends(this.userId);
-  	this.usersService.getFriendRequests().subscribe(results=>this.friendRequests);
+  	this.usersService.findFriends().subscribe(friends => this.friends = friends);
+  	this.usersService.getFriendRequests().subscribe(results=>{
+      if(results)
+        this.friendRequests=results;
+    });
   }
 
 }

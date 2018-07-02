@@ -1,4 +1,6 @@
 <h1>{{ name }}</h1>
 <p>Lots of information about this user</p>
 <button *ngIf="friend" [routerLink]="['/chat',name]">Chat to {{ name }}</button>	
-<button *ngIf="!friend" (click)="friendRequest()">Send a friend request to {{ name }}</button>	
+<button *ngIf="!friend && !friendRequested" (click)="friendRequest()">Send a friend request to 
+{{ name }}</button>	
+<button *ngIf="friendRequested" (click)="acceptFriendRequest()">Accept {{ name }}'s friend request</button>

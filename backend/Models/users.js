@@ -53,13 +53,12 @@ exports.FindFriendsForUser = function(_userid){
 	});
 }
 
-exports.AddFriendForUser = function(_userid,fuserId){
-	User.findOne({_id:_userid}).then(function(err,user){
-		/*let fl = user.friendList.push({userId,username
-		user.set('friendList',fl);
-		user.save(function(err){
-			return true;
-		});*/
+exports.AddFriendForUser = function(userid,fuserId){
+	return User.findOne({_id:fuserId}).then(user => {
+		return User.update(
+				{_id: userid },
+				{ $push: {friendList: {userId:fuserId,username:user.username}}}		
+		);
 	});
 }
 
@@ -72,6 +71,12 @@ exports.CreateFriendRequest = function(destinationId,userId,username){
 	return User.update(
 	    { _id: destinationId }, 
 	    { $push: { friendRequests: {userid:userId,username:username} } }
+	);
+}
+
+exports.DeleteFriendRequest = function(sessionUserId,userId){
+	return User.update(
+		{_id:sessionUserId},{$pull:{friendRequests: {userid:userId}}}
 	);
 }
 

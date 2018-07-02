@@ -19,9 +19,15 @@ export class LoginPageComponent implements OnInit {
   constructor(private service:UsersService, private router:Router) { }
 
   ngOnInit() {
+    this.service.getSession().subscribe(response=>{
+        if(response.length){
+          alert(response)
+          this.router.navigate(['dashboard']);
+         }
+      });
   }
 
-  submit(f){
+  submit(f){  
   	this.service.findUser(f.value.username,f.value.password).subscribe((response)=>{
      console.log(response);
 

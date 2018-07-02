@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpService } from './http.service';
 
 
 import 'rxjs/add/operator/map';
@@ -14,53 +14,38 @@ export class UsersService {
 	textd;
 	response;
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpService) { }
 
-  findUsers(){
-
-  	return this.http.get('http://localhost:8080/users');
-  	
- 	
+  // check if session is still active
+  getSession(){
+    return this.http.get('session',true,true);
   }
 
-  findFriends(userId){
-  	this.friends = [
-		{
-			name:'Danny',
-			picture: 'http://imgpic.com/4lkjr4kjh0.jpg'
-		},
-		{
-			name:'Rebecca',
-			picture: 'http://imgpic.com/4lkjr4kjh0.jpg'
-		},
-		{
-			name:'Tina',
-			picture: 'http://imgpic.com/4lkjr4kjh0.jpg'
-		},
-		{
-			name:'Max',
-			picture: 'http://imgpic.com/4lkjr4kjh0.jpg'
-		}
-	];
-	let response = this.http.get('http://localhost:8080/friends');
-	/*console.log(response.map(response => response.text()));*/
-	
+  findUsers(){
+  	return this.http.get('users',false);
+  }
+
+  findFriends(){
+	return this.http.get('friends');
   }
 
   findUser(username,password){
-  	return this.http.post('http://localhost:8080/login',{username:username,password:password},{ withCredentials:true,responseType: 'text' });
+  	return this.http.post('login',{username:username,password:password},true,true);
   }
 
   createUser(username,password){
   	//return "creating user "+username+" with password: "+password;
-  	return this.http.post('http://localhost:8080/register',{username:username,password:password},{withCredentials:true});
+  	return this.http.post('register',{username:username,password:password});
   }
   //did stands for destination user id (who is the request going to?)
   createFriendRequest(id,name){
-  	return this.http.post('http://localhost:8080/friendRequest',{userId:id,username:name},{withCredentials:true});
+  	return this.http.post('friendRequest',{userId:id,username:name});
   }
   getFriendRequests(){
-  	return this.http.get('http://localhost:8080/friendRequests',{withCredentials:true});
+  	return this.http.get('friendRequests');
+  }
+  acceptFriendRequest(id,name){
+  	return this.http.post('friendRequest/accept',{userId:id,username:name},true,true);
   }
 
 
