@@ -8,7 +8,7 @@ import { UsersService } from '../users.service';
 })
 export class ResultsComponent implements OnInit {
 
-  results: any[];
+  results;
 
   f="f";
 

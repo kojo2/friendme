@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
-import { HttpService } from './http.service';
 
 import { AppComponent } from './app.component';
 import { LoginPageComponent } from './login-page/login-page.component';
@@ -32,37 +31,37 @@ import { RegisterComponent } from './register/register.component';
     FormsModule,
     HttpModule,
     RouterModule.forRoot([
-    	{ 
-    		path:'',
-    		component: LoginPageComponent 
-    	},
-    	{ 
-    		path:'dashboard',
-    		component: DashboardComponent 
-    	},
-    	{ 
-    		path:'search',
-    		component: SearchComponent 
-    	},
-    	{
-    		path:'results',
-    		component: ResultsComponent
-    	},
-    	{
-    		path:'profile/:_id/:username/:friend',
-    		component: UserProfileComponent
-    	},
-    	{
-    		path:'chat/:username',
-    		component: ChatComponent
-    	},
+        { 
+            path:'',
+            component: LoginPageComponent 
+        },
+        { 
+            path:'dashboard',
+            component: DashboardComponent 
+        },
+        { 
+            path:'search',
+            component: SearchComponent 
+        },
+        {
+            path:'results',
+            component: ResultsComponent
+        },
+        {
+            path:'profile/:_id/:username/:friend',
+            component: UserProfileComponent
+        },
+        {
+            path:'chat/:username',
+            component: ChatComponent
+        },
         {
             path:'register',
             component: RegisterComponent
         }
     ])
   ],
-  providers: [UsersService,HttpService],
+  providers: [UsersService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

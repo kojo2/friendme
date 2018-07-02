@@ -3,7 +3,6 @@ const mongoose  = require('mongoose');
 const bodyParser = require('body-parser');
 const users = require('./Models/users');
 const webSocket = require('websocket');
-var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var mongoStore = require('connect-mongo')({session:expressSession});
 
@@ -25,7 +24,7 @@ app.use(express.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(expressSession({store: new mongoStore({ mongooseConnection: mongoose.connection}),secret:'dsjfaq3iojrmfsa',cookie : {maxAge:60*60*1000}}));
+app.use(expressSession({store: new mongoStore({ mongooseConnection: mongoose.connection}),secret:'dsjfaq3iojhgjhg5hj36jhgjh56khg53645jrmfsa',cookie : {maxAge:60*60*1000}}));
 
 
 // Allow CORS
@@ -34,6 +33,7 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
 	app.post('/login/',function(req,res){
 		var username = req.body.username;
 		var password = req.body.password;

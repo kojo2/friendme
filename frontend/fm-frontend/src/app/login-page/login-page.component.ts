@@ -30,6 +30,7 @@ export class LoginPageComponent implements OnInit {
       }
       else{
         alert("couldn't find user!");
+        //localStorage.setItem('loggedIn','false');
        }
   	});
   }
