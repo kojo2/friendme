@@ -66,9 +66,12 @@ app.use(function(req, res, next) {
 
 	app.get('/friends',function(req,res){
 		//console.log(req.body.userid+" requested their friends list");	
-		console.log(req.session);
+		//console.log(req.session);
 			users.FindFriendsForUser(req.session.user).then(function(friendList){
-				res.send(friendList);
+				if(friendList)
+					res.send(friendList);
+				else
+					res.json({});
 			});
 		
 	});
@@ -111,8 +114,9 @@ app.use(function(req, res, next) {
 	});
 
 	app.get('/friends/add',function(req,res){
-		if(users.AddFriendForUser(req.session.id,req.body.fid))
-			res.send("friend added");
+		users.AddFriendForUser(req.session.id,req.body.fid).then(result => {
+			return users.DeleteFriendRequest(req.session.user,req.body.fid);
+		})
 	});
 
 	app.get('/session',function(req,res){
@@ -138,16 +142,22 @@ app.use(function(req, res, next) {
 	});
 
 	app.post('/friendRequest/accept',function(req,res){
-		users.DeleteFriendRequest(req.body.userId,req.session.user);
+		users.DeleteFriendRequest(req.session.user,req.body.userId);
 		users.AddFriendForUser(req.body.userId,req.session.user);
 		users.AddFriendForUser(req.session.user,req.body.userId);
 		res.send("accepted friend!");
 	});
 
 	app.get('/friendRequests',function(req,res){
-		console.log(req.session);
+		//console.log(req.session);
 		if(req.session.user)
 			users.GetFriendRequests(req.session.user).then(response=>res.json(response.friendRequests))
+	});
+
+	app.get('/logout',function(req,res){
+		console.log("now destroying session");
+		req.session.destroy();
+		res.send("sucess");
 	});
 
 	//app.get('/')

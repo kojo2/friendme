@@ -19,6 +19,7 @@ export class UserProfileComponent implements OnInit {
   ngOnInit() {
   	this.route.paramMap.subscribe(params=> {
       this.id = params.get('_id');
+      console.log("id "+this.id);
   		this.name = params.get('username');
   		this.friend = (params.get('friend')=="t");
       this.friendRequested = (params.get('friend')=='r');
@@ -30,6 +31,6 @@ export class UserProfileComponent implements OnInit {
   }
 
   acceptFriendRequest(){
-    this.service.acceptFriendRequest(this.id,this.name).subscribe(response=>console.log(response));
+    this.service.acceptFriendRequest(this.id).subscribe(response=>console.log(response));
   }
 }

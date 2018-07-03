@@ -13,7 +13,6 @@ export class HttpService {
 
   get(url,creds=true,text=false){
   	let response;
-    console.log("get request: creds: "+creds+" - text: "+text);
   	// do we want a text response type?
   	if(!text)
   		response = this.http.get(this.baseUrl+"/"+url,{withCredentials:creds});

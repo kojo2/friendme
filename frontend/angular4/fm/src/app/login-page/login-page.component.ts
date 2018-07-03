@@ -19,12 +19,17 @@ export class LoginPageComponent implements OnInit {
   constructor(private service:UsersService, private router:Router) { }
 
   ngOnInit() {
-    this.service.getSession().subscribe(response=>{
+    /*if(localStorage.getItem('loggedIn')){
+      console.log("exists");
+      this.service.getSession().subscribe(response=>{
         if(response.length){
-          alert(response)
+          console.log(response);
           this.router.navigate(['dashboard']);
          }
       });
+    }else{
+      console.log("doesn't exist");
+    }*/
   }
 
   submit(f){  

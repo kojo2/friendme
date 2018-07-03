@@ -17,9 +17,9 @@ exports.CreateUser = function(_username,_password){
 	user.save(function(err){
 		if(err) 
 			return err;
-			console.log("there was an error: "+err);
+			//console.log("there was an error: "+err);
 		//saved!
-		console.log("saved user")
+		//console.log("saved user")
 	});
 }
 
@@ -49,7 +49,7 @@ exports.DeleteAll = function(){
 
 exports.FindFriendsForUser = function(_userid){
 	return User.findOne({_id:_userid}).then(function(user){
-		return user.friendList;
+		return user.friendList || {};
 	});
 }
 
@@ -76,7 +76,8 @@ exports.CreateFriendRequest = function(destinationId,userId,username){
 
 exports.DeleteFriendRequest = function(sessionUserId,userId){
 	return User.update(
-		{_id:sessionUserId},{$pull:{friendRequests: {userid:userId}}}
+		{ _id:sessionUserId },
+		{ $pull: { friendRequests: {userid:userId} } }
 	);
 }
 

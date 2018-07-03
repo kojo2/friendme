@@ -44,10 +44,12 @@ export class UsersService {
   getFriendRequests(){
   	return this.http.get('friendRequests');
   }
-  acceptFriendRequest(id,name){
-  	return this.http.post('friendRequest/accept',{userId:id,username:name},true,true);
+  acceptFriendRequest(id){
+  	return this.http.post('friendRequest/accept',{userId:id},true,true);
   }
-
+  logout(){
+    return this.http.get('logout',true,true);
+  }
 
 
 }
