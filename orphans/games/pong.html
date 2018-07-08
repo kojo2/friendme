@@ -153,8 +153,9 @@
 				paddle1.draw();
 				paddle2.draw();
 				ball.draw();
-				if(syncing)
+				if(syncing){
 					SendToServer();
+				}
 				window.requestAnimationFrame(frame);
 			}
 
