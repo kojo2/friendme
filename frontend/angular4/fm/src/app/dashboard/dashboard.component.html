@@ -14,7 +14,7 @@
 <div class="me-pic"><img src="/assets/images/Anon-Person.png" width="100px"/></div>
 <ul class="friend-list">
 	<li class="friend-conversation" *ngFor="let friend of friends">
-		<a [routerLink]="['/profile',friend._id,friend.username,'t']">
+		<a [routerLink]="['/profile',friend.userId,friend.username,'t']">
 			<p>{{ friend.username }}</p>
 			<p class="message-indicator">2</p>
 			<p>Great idea dude! I'll see...</p>

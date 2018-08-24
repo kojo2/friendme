@@ -12,6 +12,7 @@ import { ResultsComponent } from './results/results.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { ChatComponent } from './chat/chat.component';
 import { UsersService } from './users.service';
+import { ConversationService } from './conversation.service';
 import { RegisterComponent } from './register/register.component';
 import { HttpService } from './http.service';
 
@@ -53,7 +54,7 @@ import { HttpService } from './http.service';
             component: UserProfileComponent
         },
         {
-            path:'chat/:username',
+            path:'chat/:username/:id',
             component: ChatComponent
         },
         {
@@ -62,7 +63,7 @@ import { HttpService } from './http.service';
         }
     ])
   ],
-  providers: [UsersService,HttpService],
+  providers: [UsersService,HttpService, ConversationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

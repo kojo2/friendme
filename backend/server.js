@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose  = require('mongoose');
 const bodyParser = require('body-parser');
 const users = require('./Models/users');
+const conversations = require('./Models/conversations');
 const webSocket = require('websocket');
 const { validateLoc } = require('./validateLoc');
 var expressSession = require('express-session');
@@ -123,7 +124,24 @@ app.use(function(req, res, next) {
 	app.get('/session',function(req,res){
 		//console.log(req.session.id);
 		res.send(req.session.id);
-	})
+	});
+
+	app.post('/conversation',function(req,res){
+		var userid = req.body.userid;
+		var userid2 = req.session.user;
+		//check if a conversation already exists between these users
+		//conversations.GetConversation(userid,userid2);
+		conversations.CreateConversation(userid,userid2);
+	});	
+
+	app.post('/conversation/message',function(req,res){
+		var userid = req.body.userid;
+		var userid2 = req.session.user;
+		var message = req.body.message;
+		conversations.AddMessage(userid,userid2,message).then((updatedConversation)=>{
+			console.log(updatedConversation);
+		});
+	});
 
 	app.get('/users',function(req,res){
 		users.FindAllOtherUsers(req.session.user).then(function(data){
