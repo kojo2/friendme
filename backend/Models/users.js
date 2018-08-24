@@ -2,7 +2,12 @@ const mongoose = require('mongoose');
 
 const autoIncrement = require('mongoose-auto-increment');
 
-const schema = new mongoose.Schema({username: 'string', password:'string', friendList:[{userId:Number,username:String}],friendRequests:[{userid:Number,username:String}]});
+const schema = new mongoose.Schema({username: 'string', password:'string', friendList:[{userId:Number,username:String}],friendRequests:[{userid:Number,username:String}],  loc: {
+        type: { type: String },
+        coordinates: [Number],
+    }});
+
+schema.index({ "loc": "2dsphere" });
 
 const User = mongoose.model('User',schema);
 
@@ -12,8 +17,13 @@ mongoose.connect('mongodb://localhost/fm');
 autoIncrement.initialize(mongoose.connection);
 schema.plugin(autoIncrement.plugin,'User');
 
-exports.CreateUser = function(_username,_password){
-	var user = new User({"username":_username,"password":_password});
+exports.CreateUser = function(_username,_password,_loc){
+	var user = new User({"username":_username,"password":_password,
+		"loc":{
+			"type": "Point",
+         	"coordinates": [_loc.lon, _loc.lat]
+		}
+	});
 	user.save(function(err){
 		if(err) 
 			return err;
@@ -34,8 +44,29 @@ exports.FindUser = function(_username,_password){
 	});
 }
 
-exports.FindAllOtherUsers = function(){
-	return User.find();
+exports.FindAllOtherUsers = function(userid){
+	return User.find( { _id: { $ne: userid } } );
+}
+
+exports.searchUsersByDistance = function(userid,dist,loc) {
+	// credit https://stackoverflow.com/questions/32199658/create-find-geolocation-in-mongoose
+	return User.aggregate(
+    [
+        { "$geoNear": {
+            "near": {
+                "type": "Point",
+                "coordinates": [loc.lon,loc.lat]
+            },
+            "distanceField": "distance",
+            "spherical": true,
+            "maxDistance": dist*1609.34,
+            "query": { "_id": { "$ne": userid } }
+        }}
+    ],
+    function(err,results) {
+    	return err;
+    }
+)
 }
 
 exports.FindUserCheckPassword = function(_username,_password){	

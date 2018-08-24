@@ -22,7 +22,7 @@ export class UsersService {
   }
 
   findUsers(){
-  	return this.http.get('users',false);
+  	return this.http.get('users',true);
   }
 
   findFriends(){
@@ -33,9 +33,13 @@ export class UsersService {
   	return this.http.post('login',{username:username,password:password},true,true);
   }
 
-  createUser(username,password){
+  searchAllUsers(distance,position){
+    return this.http.post('search',{distance:distance, position:position},true);
+  }
+
+  createUser(username,password,loc){
   	//return "creating user "+username+" with password: "+password;
-  	return this.http.post('register',{username:username,password:password});
+  	return this.http.post('register',{username:username,password:password,loc:loc},false,true);
   }
   //did stands for destination user id (who is the request going to?)
   createFriendRequest(id,name){

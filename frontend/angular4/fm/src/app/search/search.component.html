@@ -1,4 +1,6 @@
 <h1>Search for new friends</h1>
-<label>Max distance from me: </label>
-<input type="number"> miles
-<button routerLink="/results">Go</button>
+<label>Max distance:</label>
+<input type="number" [(ngModel)]="distance"> miles
+<label>From postcode:</label>
+<input type="text" [(ngModel)]="postCode">
+<button (click)="go()">Go</button>

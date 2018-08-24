@@ -4,6 +4,8 @@ import { UsersService } from '../users.service';
 
 import { Router } from '@angular/router';
 
+import { ViewEncapsulation } from '@angular/core';
+
 
 @Component({
   selector: 'login-page',
@@ -16,7 +18,13 @@ export class LoginPageComponent implements OnInit {
 
 	user;
 
-  constructor(private service:UsersService, private router:Router) { }
+  constructor(private service:UsersService, private router:Router) { 
+    document.body.className = "bg-picture";
+  }
+
+  ngOnDestroy(){
+    document.body.className="";
+  }
 
   ngOnInit() {
     /*if(localStorage.getItem('loggedIn')){

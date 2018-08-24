@@ -1,4 +1,6 @@
-<h1>Welcome to your dashboard</h1>
+<div class="logo-container">
+		<img src="assets/images/friendMeLogo.png" class="logo">
+	</div>
 <div *ngIf="friendRequests?.length > 0">
 	<p>You have {{ friendRequests.length }} friendRequests</p>
 	<ul>
@@ -9,14 +11,17 @@
 		</li>
 	</ul>
 </div>
-<h3>Friends:</h3>
-<ul>
-	<li *ngFor="let friend of friends">
-		<a [routerLink]="['/profile',friend.name,true]">
+<div class="me-pic"><img src="/assets/images/Anon-Person.png" width="100px"/></div>
+<ul class="friend-list">
+	<li class="friend-conversation" *ngFor="let friend of friends">
+		<a [routerLink]="['/profile',friend._id,friend.username,'t']">
 			<p>{{ friend.username }}</p>
+			<p class="message-indicator">2</p>
+			<p>Great idea dude! I'll see...</p>
+			<p class="time-indicator">10:49pm</p>
 		</a>
 	</li>
 </ul>
-
-<input type="submit" value="Search for new friends" routerLink="/search">
-<input type="submit" value="Logout" (click)="logout()">
+<a><i class="fa fa-cog"></i></a>
+<a [routerLink]="['/search']"><i class="fa fa-search"></i></a>
+<!-- <input type="submit" value="Logout" (click)="logout()"> -->

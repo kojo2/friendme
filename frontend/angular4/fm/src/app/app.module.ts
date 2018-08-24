@@ -45,7 +45,7 @@ import { HttpService } from './http.service';
             component: SearchComponent 
         },
         {
-            path:'results',
+            path:'results/:loc/:dist',
             component: ResultsComponent
         },
         {

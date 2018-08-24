@@ -3,6 +3,7 @@ const mongoose  = require('mongoose');
 const bodyParser = require('body-parser');
 const users = require('./Models/users');
 const webSocket = require('websocket');
+const { validateLoc } = require('./validateLoc');
 var expressSession = require('express-session');
 var mongoStore = require('connect-mongo')({session:expressSession});
 //const cors = require('cors');
@@ -79,36 +80,36 @@ app.use(function(req, res, next) {
 	app.post('/register/',function(req,res){
 		var username = req.body.username;
 		var password = req.body.password;
-
-		//console.log(username+" and "+password);
-		
-		/*users.FindUser(username,password).then(function(result){
-			console.log("found user");
-		}, function(err){
-			console.log("Did not find user");
-		});*/
-
-		// DEV line for delete all documents in users collection - Just faster than compass!
-		if(username==null){
-			users.DeleteAll();
-			res.send("deleted everything");
-		}else{
-		users.FindUser(username,password).then(
-			function(result){
-				if(result==null){
-					// if user doesn't already exist then create them
-					users.CreateUser(username,password);
-					res.send("User created successfully");
-				}
-				else{
-					res.send("User already exists");
-				}
-			},
-			function(err){
-				res.send("there was an unspecified error");
+		var loc = req.body.loc;
+		console.log(req.body);
+		// if the location loc is a postcode then geocode it to a location using google 
+		validateLoc(loc).then(function(loc){
+			// DEV line for delete all documents in users collection - Just faster than compass!
+			if(username==""){
+				users.DeleteAll();
+				console.log("deleted everything");
+			}else{
+			users.FindUser(username,password).then(
+				function(result){
+					if(!result){
+						// if user doesn't already exist then create them
+						users.CreateUser(username,password,loc);
+						res.send("User created successfully");
+						console.log("sending User created successfully")
+					}
+					else{
+						res.send("User already exists");
+						console.log("sending User already exists");
+					}
+				},
+				function(err){
+					res.send("there was an unspecified error");
+					console.log("sending there was an unspecified error");
+				});
 			}
-		);
-		}
+		})
+		
+		
 		
 		
 	});
@@ -125,10 +126,22 @@ app.use(function(req, res, next) {
 	})
 
 	app.get('/users',function(req,res){
-		users.FindAllOtherUsers().then(function(data){
+		users.FindAllOtherUsers(req.session.user).then(function(data){
 			//console.log(data);
 			res.json(data);
 		});
+	});
+
+	app.post('/search',function(req,res){
+		dist = req.body.distance;
+		loc = req.body.position;
+		validateLoc(loc).then(function(loc){
+			users.searchUsersByDistance(req.session.user,dist,loc).then(function(data){
+				res.json(data);
+			});
+		});
+		
+
 	});
 
 	app.get('/user/:userid',function(req,res){

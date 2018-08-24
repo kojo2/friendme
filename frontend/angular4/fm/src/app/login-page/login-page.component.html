@@ -1,10 +1,12 @@
 <form #f="ngForm" (ngSubmit)="submit(f)">
-	<h1>Welcome to the landing page</h1>
-	<h2>Please login</h2>
-	<label>Username:</label><input type="text" ngModel name="username" #username="ngModel"><br>
-	<label>Password:</label><input type="text" ngModel name="password" #password="ngModel"><br>
-	<input type="submit" value="Go"><br>
-	<input type="submit" value="Create a new account" routerLink="/register">
+	<div class="logo-container">
+		<img src="assets/images/friendMeLogo.png" class="logo">
+	</div>
+	<input type="text" ngModel name="username" #username="ngModel" placeholder="Username">
+	<input type="text" ngModel name="password" #password="ngModel" placeholder="Password">
+	<input type="submit" value="Log In" class="main-button">
+	<input type="submit" value="Create New Account" routerLink="/register" class="secondary-button">
+	<a href="#" class="f-password">Forgotten password?</a>
 </form>
 
 {{message}}
