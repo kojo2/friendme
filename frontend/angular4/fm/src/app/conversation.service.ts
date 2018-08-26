@@ -14,6 +14,6 @@ export class ConversationService {
   }
 
   addMessage(userid,message){
-  	return this.http.post('conversation/message',{userid,message:message},true);
+  	return this.http.post('conversation/message',{userid:userid,message:message},true);
   }
 }

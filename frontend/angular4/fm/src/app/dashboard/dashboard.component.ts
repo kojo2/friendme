@@ -12,21 +12,31 @@ export class DashboardComponent implements OnInit {
 	userId = 1;
 	friends;
 	friendRequests;
+  name;
 
   constructor(private usersService:UsersService, private router:Router) { }
 
   ngOnInit() {
+    this.name = this.capitalize(localStorage.getItem('username'));
   	this.usersService.findFriends().subscribe(friends => this.friends = friends);
   	this.usersService.getFriendRequests().subscribe(results=>{
       if(results)
         this.friendRequests=results;
     });
+    let thisObj = this;
+    setInterval(function(){thisObj.usersService.findFriends().subscribe(friends => thisObj.friends = friends)},3000);
+  }
+
+  capitalize(str) {
+    return str[0].toUpperCase()+str.slice(1,str.length);
   }
 
   logout(){
     this.usersService.logout().subscribe(response=>{
       console.log(response);
       localStorage.setItem('loggedIn','false');
+      localStorage.setItem('username',null);
+      localStorage.setItem('password',null);
       this.router.navigate(['']);
     });
   }

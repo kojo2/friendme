@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const autoIncrement = require('mongoose-auto-increment');
 
-const schema = new mongoose.Schema({username: 'string', password:'string', friendList:[{userId:Number,username:String}],friendRequests:[{userid:Number,username:String}],  loc: {
+const schema = new mongoose.Schema({username: 'string', password:'string', friendList:[{userId:Number,username:String,loggedIn:{type:Boolean, Default:false}}],friendRequests:[{userid:Number,username:String}],  loc: {
         type: { type: String },
         coordinates: [Number],
     }});
@@ -79,16 +79,19 @@ exports.DeleteAll = function(){
 }
 
 exports.FindFriendsForUser = function(_userid){
+	//console.log("userid: "+_userid);
 	return User.findOne({_id:_userid}).then(function(user){
-		return user.friendList || {};
-	});
+		if(!user)
+			return {};
+		return user.friendList;
+	}).catch((err) => console.log(err));
 }
 
 exports.AddFriendForUser = function(userid,fuserId){
 	return User.findOne({_id:fuserId}).then(user => {
 		return User.update(
 				{_id: userid },
-				{ $push: {friendList: {userId:fuserId,username:user.username}}}		
+				{ $push: {friendList: {userId:fuserId,username:user.username,loggedIn:false}}}		
 		);
 	});
 }

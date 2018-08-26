@@ -1,3 +1,8 @@
 <h1>Chat to {{ name }}</h1>
-<textarea name="msg"cols="100" rows="20" [(ngModel)]="message"></textarea><br>
+<ul>
+	<li *ngFor="let message of messages">
+		{{ message }}
+	</li>
+</ul>
+<input type="text" name="msg" [(ngModel)]="message"><br>
 <button (click)="send()">Send</button>

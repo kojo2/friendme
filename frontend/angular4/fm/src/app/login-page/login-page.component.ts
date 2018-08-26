@@ -27,17 +27,17 @@ export class LoginPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    /*if(localStorage.getItem('loggedIn')){
+    if(localStorage.getItem('loggedIn')){
       console.log("exists");
       this.service.getSession().subscribe(response=>{
         if(response.length){
           console.log(response);
-          this.router.navigate(['dashboard']);
+          //this.router.navigate(['dashboard']);
          }
       });
     }else{
       console.log("doesn't exist");
-    }*/
+    }
   }
 
   submit(f){  
@@ -46,11 +46,15 @@ export class LoginPageComponent implements OnInit {
 
       if(response=="true"){
         localStorage.setItem('loggedIn','false');
+        localStorage.setItem('username',f.value.username);
+        localStorage.setItem('password',f.value.password);
         this.router.navigate(['dashboard']);
       }
       else{
         alert("couldn't find user!");
         localStorage.setItem('loggedIn','false');
+        localStorage.setItem('username',null);
+        localStorage.setItem('password',null);
        }
   	});
   }

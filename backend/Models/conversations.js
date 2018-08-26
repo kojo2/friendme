@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const autoIncrement = require('mongoose-auto-increment');
 
-const conversationSchema = new mongoose.Schema({userid: 'string', userid2:'string', messages:[{userId:Number,message:String}]});
+const conversationSchema = new mongoose.Schema({userid: 'string', userid2:'string', messages:[{userId:Number,message:String,otherName:String}]});
 const Conversation = mongoose.model('Conversation',conversationSchema);
 
 mongoose.connect('mongodb://localhost/fm');
@@ -12,30 +12,12 @@ conversationSchema.plugin(autoIncrement.plugin,'Conversation');
 
 exports.CreateConversation = function(userid,userid2){
 	// first we check if a conversation already exists between these two users
-	this.GetConversation(userid,userid2).then((exists)=>{
-		console.log(exists);
-		if(exists == null){
+	return this.GetConversation(userid,userid2).then((conversation)=>{
+		if(conversation==null){
 			var conversation = new Conversation({"userid":userid,"userid2":userid2});
 			conversation.save(function(err){
-			if(err) 
-				return err;
-				//console.log("there was an error: "+err);
-			//saved!
-			//console.log("saved user")
-			});
-		}	
-	});
-	
-}
-
-exports.GetConversation = function(userid,userid2){
-	return Conversation.findOne({userid:userid,userid2:userid2}, function(err,conversation){
-		if(!conversation){
-			return Conversation.findOne({userid:userid2,userid2:userid}, function(err,conversation){
-				if(!conversation)
-					return false;
-				else
-					return conversation;
+				if(err) 
+					return err;
 			});
 		}else{
 			return conversation;
@@ -43,14 +25,28 @@ exports.GetConversation = function(userid,userid2){
 	});
 }
 
+exports.GetConversation = function(userid,userid2){
+	return Conversation.findOne({userid:userid,userid2:userid2}).then((result1)=>{
+		return Conversation.findOne({userid:userid2,userid2:userid}).then((result2)=>{
+			if(result1!=null)
+				return result1;
+			if(result2!=null)
+				return result2;
+		});
+	});
+}
+
+exports.deleteAll = function(){
+	Conversation.remove({},function(){});
+}
+
 exports.AddMessage = function(userid,userid2,message){
 	return this.GetConversation(userid,userid2).then((conversation) => {
+		var blob = {message:message, userId:userid};
 		return Conversation.update(
 				{_id: conversation._id },
-				{ $push: {messages: {message}}}		
-		,(err,conversation)=>{
-			return this.GetConversation(userid,userid2);
-		});
+				{ $push: {messages: blob }}
+		);
 	});
 
 }

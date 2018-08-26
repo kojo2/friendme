@@ -3,6 +3,7 @@ const mongoose  = require('mongoose');
 const bodyParser = require('body-parser');
 const users = require('./Models/users');
 const conversations = require('./Models/conversations');
+const sessions = require('./Models/sessions');
 const webSocket = require('websocket');
 const { validateLoc } = require('./validateLoc');
 var expressSession = require('express-session');
@@ -10,6 +11,9 @@ var mongoStore = require('connect-mongo')({session:expressSession});
 //const cors = require('cors');
 
 const app = express();
+
+//sessions.deleteAll();
+//conversations.deleteAll();
 
 //app.use(cors());
 
@@ -29,7 +33,9 @@ app.use(express.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(expressSession({store: new mongoStore({ mongooseConnection: mongoose.connection}),secret:'dsjfaq3iojhgjhg5hj36jhgjh56khg53645jrmfsa',cookie : {maxAge:60*60*1000}}));
+var sessionParser = expressSession({store: new mongoStore({ mongooseConnection: mongoose.connection}),secret:'dsjfaq3iojhgjhg5hj36jhgjh56khg53645jrmfsa',cookie : {maxAge:60*60*1000}});
+
+app.use(sessionParser);
 
 
 // Allow CORS
@@ -49,9 +55,11 @@ app.use(function(req, res, next) {
 		users.FindUserCheckPassword(username,password).then(function(user){
 			if(user!=false){
 				req.session.regenerate(function(){
+					console.log("created a new session "+req.session.id);
 					req.session.user = user.id;
 					req.session.username = user.username;
 					req.session.msg = 'Authenticated as '+user.username;
+					req.session.save();
 					//console.log("user logged in is: "+req.session.user);
 					res.send("true");
 				});
@@ -69,11 +77,23 @@ app.use(function(req, res, next) {
 	app.get('/friends',function(req,res){
 		//console.log(req.body.userid+" requested their friends list");	
 		//console.log(req.session);
+		let count = 0;
 			users.FindFriendsForUser(req.session.user).then(function(friendList){
-				if(friendList)
-					res.send(friendList);
-				else
-					res.json({});
+				if(friendList){
+					for(let i=0; i<friendList.length; i++){
+						let friend = friendList[i];
+						sessions.checkSession(friend.userId).then((result)=>{
+							friendList[i].loggedIn = result;
+							if(count==friendList.length){
+								if(!res.headersSent)
+									res.send(friendList);
+							}
+						});
+						count++;
+					}
+				}else{
+					res.send("err");
+				}
 			});
 		
 	});
@@ -128,10 +148,14 @@ app.use(function(req, res, next) {
 
 	app.post('/conversation',function(req,res){
 		var userid = req.body.userid;
+		req.session.chatUser = userid;
 		var userid2 = req.session.user;
 		//check if a conversation already exists between these users
 		//conversations.GetConversation(userid,userid2);
-		conversations.CreateConversation(userid,userid2);
+		conversations.CreateConversation(userid,userid2).then((conversation)=>{
+			if(conversation!=null)
+				res.send(conversation);
+		})
 	});	
 
 	app.post('/conversation/message',function(req,res){
@@ -139,7 +163,7 @@ app.use(function(req, res, next) {
 		var userid2 = req.session.user;
 		var message = req.body.message;
 		conversations.AddMessage(userid,userid2,message).then((updatedConversation)=>{
-			console.log(updatedConversation);
+			//console.log(updatedConversation);
 		});
 	});
 
@@ -186,27 +210,14 @@ app.use(function(req, res, next) {
 	});
 
 	app.get('/logout',function(req,res){
-		console.log("now destroying session");
+		console.log("now destroying session "+req.session.id);
 		req.session.destroy();
 		res.send("sucess");
 	});
 
-	//app.get('/')
+	
 
-function get(url,resp){
-	app.get('/'+url,(req,res)=>{
-		res.send(resp);
-	});
-}
 
-app.get('/',function(req,res){
-	let struc = {
-		man:"bob",
-		dog:"Yappie"
-	};
-	res.json(struc);
-})
-get('login','retrieving user');
 //get('register','registering new user');
 
 
@@ -217,3 +228,65 @@ console.log("app listening on 8080");
 var randomWords = require('random-words');
 
 //console.log(randomWords(10));
+
+
+// websocket stuff
+
+var WebSocketServer = webSocket.server;
+var http = require('http');
+
+var server = http.createServer(function(req,res){
+
+});
+
+server.listen(1234, function(){
+});
+
+wsServer = new WebSocketServer({
+	httpServer: server
+});
+
+var connections = [];
+
+wsServer.on('request',function(r){
+
+	sessionParser(r.httpRequest, {},function(){
+		let user = r.httpRequest.session.user;
+		let username = r.httpRequest.session.username;
+		var connection = r.accept('echo-protocol',r.origin);
+		console.log("userid "+user+" connected to the websocket server");
+		connection.send("connected");
+		connections.push({connection:connection,userid:user});
+		connection.on('message',function(packet){
+			let packetObj = JSON.parse(packet.utf8Data);	
+			let otherUser = packetObj.otherUser;
+			let message = packetObj.message;
+			if(message=="initial"){
+				console.log("server received the initial message from the connected client");
+				console.log("now we must send back the conversation history");
+				let identifiers = {
+					["userid"+user]:username,
+					["userid"+otherUser]:packetObj.otherUsername
+				};
+				conversations.GetConversation(otherUser,user).then((conversation)=>connection.sendUTF(JSON.stringify({typ:"initial",conversation:conversation,identifiers:identifiers})));
+			}
+			// cycle through the connections to find the other person's connection so we can send the message to them
+			connections.forEach((c)=>{
+				if(c.userid==otherUser){
+					c.connection.sendUTF(username+" says: "+message);
+					console.log("sending message from userid: "+user+" to userid: "+otherUser);
+					console.log("the message is: "+message);
+					console.log("found userid "+otherUser+" at id: "+c.userid+"!");
+				}
+				else
+				{
+					console.log("couldn't find user with id: "+otherUser);
+				}
+			});
+
+			
+		});
+	})
+	//
+	
+});

@@ -26,7 +26,7 @@ export class UsersService {
   }
 
   findFriends(){
-	return this.http.get('friends');
+	return this.http.get('friends',true);
   }
 
   findUser(username,password){

@@ -1,6 +1,7 @@
 <div class="logo-container">
 		<img src="assets/images/friendMeLogo.png" class="logo">
 	</div>
+	<h1>Hi {{ name }}</h1>
 <div *ngIf="friendRequests?.length > 0">
 	<p>You have {{ friendRequests.length }} friendRequests</p>
 	<ul>
@@ -19,9 +20,11 @@
 			<p class="message-indicator">2</p>
 			<p>Great idea dude! I'll see...</p>
 			<p class="time-indicator">10:49pm</p>
+			<p *ngIf="friend.loggedIn">Online now!</p>
+			<p *ngIf="!friend.loggedIn">Offline</p>
 		</a>
 	</li>
 </ul>
 <a><i class="fa fa-cog"></i></a>
 <a [routerLink]="['/search']"><i class="fa fa-search"></i></a>
-<!-- <input type="submit" value="Logout" (click)="logout()"> -->
+<input type="submit" value="Logout" (click)="logout()">
