@@ -15,6 +15,7 @@ import { UsersService } from './users.service';
 import { ConversationService } from './conversation.service';
 import { RegisterComponent } from './register/register.component';
 import { HttpService } from './http.service';
+import { HangmanGameComponent } from './hangman-game/hangman-game.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { HttpService } from './http.service';
     ResultsComponent,
     UserProfileComponent,
     ChatComponent,
-    RegisterComponent
+    RegisterComponent,
+    HangmanGameComponent
   ],
   imports: [
     BrowserModule,
@@ -56,6 +58,10 @@ import { HttpService } from './http.service';
         {
             path:'chat/:username/:id',
             component: ChatComponent
+        },
+        {
+            path:'hangman/:username',
+            component: HangmanGameComponent
         },
         {
             path:'register',

@@ -6,3 +6,5 @@
 </ul>
 <input type="text" name="msg" [(ngModel)]="message"><br>
 <button (click)="send()">Send</button>
+
+<a href="" [routerLink]="['/hangman',name]">Play Hangman with {{ name }}</a>
