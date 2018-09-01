@@ -1,0 +1,22 @@
+
+
+.block {
+	width: 30px;
+	height:28px;
+	border:solid 1px red;
+	display: inline-block;
+	text-align: center;
+	padding-top: 2px;
+	padding-bottom: 0px;
+
+	-webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+.highlighted {
+	background-color: yellow;
+}

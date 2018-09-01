@@ -16,6 +16,7 @@ import { ConversationService } from './conversation.service';
 import { RegisterComponent } from './register/register.component';
 import { HttpService } from './http.service';
 import { HangmanGameComponent } from './hangman-game/hangman-game.component';
+import { WordsearchComponent } from './wordsearch/wordsearch.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { HangmanGameComponent } from './hangman-game/hangman-game.component';
     UserProfileComponent,
     ChatComponent,
     RegisterComponent,
-    HangmanGameComponent
+    HangmanGameComponent,
+    WordsearchComponent
   ],
   imports: [
     BrowserModule,
@@ -62,6 +64,10 @@ import { HangmanGameComponent } from './hangman-game/hangman-game.component';
         {
             path:'hangman/:username',
             component: HangmanGameComponent
+        },
+        {
+            path: 'wordsearch/:username',
+            component: WordsearchComponent
         },
         {
             path:'register',
