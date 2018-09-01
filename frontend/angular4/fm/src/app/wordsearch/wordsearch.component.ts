@@ -103,7 +103,7 @@ export class WordsearchComponent implements OnInit {
                 if(wttaIndex>-1)
                   this.wordsToTryAgain.splice(wttaIndex,1);
               }
-              $("#block"+gridRef).css({"background-this.color":"pink"});
+              //$("#block"+gridRef).css({"background-color":"pink"});
               gridRef++;
             }else{
               // if we are trying to go over another word -> delete all the letters that came before this one
@@ -115,7 +115,7 @@ export class WordsearchComponent implements OnInit {
               // go through the previous letters 
               for(let k=0; k<i; k++){
                 // and get rid of the letter that has been written to them
-                $("#block"+gridRef).html("-");
+                $("#block"+gridRef).html(this.ChooseRandomLetter());
                 // go to next letter (up to i which is where the letter that crosses another word is)
                 gridRef++;
               }
@@ -141,7 +141,7 @@ export class WordsearchComponent implements OnInit {
                 if(wttaIndex>-1)
                   this.wordsToTryAgain.splice(wttaIndex,1);
               }
-              $("#block"+gridRef).css({"background-this.color":"green"});
+              //$("#block"+gridRef).css({"background-color":"green"});
               gridRef--;
             }else{
               // if we are trying to go over another word -> delete all the letters that came before this one
@@ -153,7 +153,7 @@ export class WordsearchComponent implements OnInit {
               // go through the previous letters 
               for(let k=0; k<i; k++){
                 // and get rid of the letter that has been written to them
-                $("#block"+gridRef).html("-");
+                $("#block"+gridRef).html(this.ChooseRandomLetter());
                 // go to next letter (up to i which is where the letter that crosses another word is)
                 gridRef--;
               }
@@ -166,8 +166,8 @@ export class WordsearchComponent implements OnInit {
         case 2:
           //up
           let top = gridRef.toString()[1];
-          /*$("#block"+gridRef).css({"background-this.color":"red"});
-          $("#block"+top).css({"background-this.color":"blue"});*/
+          /*//$("#block"+gridRef).css({"background-color":"red"});
+          $("#block"+top).css({"background-color":"blue"});*/
           while ((gridRef-(word.length*10))<parseFloat(top)){
             gridRef+=10;
           }
@@ -183,7 +183,7 @@ export class WordsearchComponent implements OnInit {
                 if(wttaIndex>-1)
                   this.wordsToTryAgain.splice(wttaIndex,1);
               }
-              $("#block"+gridRef).css({"background-this.color":"red"});
+              //$("#block"+gridRef).css({"background-color":"red"});
               gridRef-=10;
             }else{
               // if we are trying to go over another word -> delete all the letters that came before this one
@@ -195,7 +195,7 @@ export class WordsearchComponent implements OnInit {
               // go through the previous letters 
               for(let k=0; k<i; k++){
                 // and get rid of the letter that has been written to them
-                $("#block"+gridRef).html("-");
+                $("#block"+gridRef).html(this.ChooseRandomLetter());
                 // go to next letter (up to i which is where the letter that crosses another word is)
                 gridRef-=10;
               }
@@ -227,7 +227,7 @@ export class WordsearchComponent implements OnInit {
                 if(wttaIndex>-1)
                   this.wordsToTryAgain.splice(wttaIndex,1);
               }
-              $("#block"+gridRef).css({"background-this.color":"orange"});
+              //$("#block"+gridRef).css({"background-color":"orange"});
               gridRef+=10;
             }else{
               // if we are trying to go over another word -> delete all the letters that came before this one
@@ -239,7 +239,7 @@ export class WordsearchComponent implements OnInit {
               // go through the previous letters 
               for(let k=0; k<i; k++){
                 // and get rid of the letter that has been written to them
-                $("#block"+gridRef).html("-");
+                $("#block"+gridRef).html(this.ChooseRandomLetter());
                 // go to next letter (up to i which is where the letter that crosses another word is)
                 gridRef+=10;
               }
@@ -339,6 +339,9 @@ export class WordsearchComponent implements OnInit {
               alert("correct! the word was "+foundWord);
             }else{
               alert("that was not a word");
+              for(let o=thisObj.previousGridRef;o<=gridRef;o+=10){
+                thisObj.RemoveHighlightSquare(o);
+              }
             }
           }
           else{
@@ -387,6 +390,9 @@ export class WordsearchComponent implements OnInit {
               alert("correct! the word was "+foundWord);
             }else{
               alert("that was not a word");
+              for(let o=thisObj.previousGridRef;o>=gridRef;o-=10){
+                thisObj.RemoveHighlightSquare(o);
+              }
             }
           }
           else{
@@ -438,6 +444,9 @@ export class WordsearchComponent implements OnInit {
               alert("correct! the word was "+foundWord);
             }else{
               alert("that was not a word");
+              for(let o=thisObj.previousGridRef;o<=gridRef;o++){
+                thisObj.RemoveHighlightSquare(o);
+              }
             }
           }
           if(diffX<0){
@@ -479,6 +488,9 @@ export class WordsearchComponent implements OnInit {
               alert("correct! the word was "+foundWord);
             }else{
               alert("that was not a word");
+              for(var o=thisObj.previousGridRef;o>=gridRef;o--){
+                thisObj.RemoveHighlightSquare(o);
+              }
             }
           }
           else{
@@ -491,6 +503,7 @@ export class WordsearchComponent implements OnInit {
         else if(diffX!=0 && diffY!=0){
           //illegal move
           thisObj.RemoveHighlightSquare(thisObj.previousGridRef);
+          thisObj.RemoveHighlightSquare(gridRef);
           console.log("illegal move");
           
         }
