@@ -22,6 +22,8 @@ export class WordsearchComponent implements OnInit {
     'QUICK',
     'DURING'];
 
+  originalWords = this.words;
+
   letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
   usedWords = [];
@@ -34,11 +36,21 @@ export class WordsearchComponent implements OnInit {
 
   counter=0;
 
+  highlighting = false;
+  previousGridRef=0;
+  previousGridRefX = 0;
+  previousGridRefY = 0;
+
+  endpoint = 1;
+
+  color = "yellow";
+
   constructor() { }
 
   ngOnInit() {
     this.CreateBlocks();
     this.MainLoop();
+    this.clickEventListener();
   }
 
   CreateBlocks() {
@@ -46,7 +58,7 @@ export class WordsearchComponent implements OnInit {
     document.write("<br>");
     for(var y=0; y<10; y++){
       for(var x=0;x<10;x++){
-        document.write("<div class='block' id='block"+i+"'>"+"+"+"</div>");
+        document.write("<div class='block' id='block"+i+"'>"+this.ChooseRandomLetter()+"</div>");
         i++
       }
       document.write("<br>");
@@ -91,7 +103,7 @@ export class WordsearchComponent implements OnInit {
                 if(wttaIndex>-1)
                   this.wordsToTryAgain.splice(wttaIndex,1);
               }
-              $("#block"+gridRef).css({"background-color":"pink"});
+              $("#block"+gridRef).css({"background-this.color":"pink"});
               gridRef++;
             }else{
               // if we are trying to go over another word -> delete all the letters that came before this one
@@ -129,7 +141,7 @@ export class WordsearchComponent implements OnInit {
                 if(wttaIndex>-1)
                   this.wordsToTryAgain.splice(wttaIndex,1);
               }
-              $("#block"+gridRef).css({"background-color":"green"});
+              $("#block"+gridRef).css({"background-this.color":"green"});
               gridRef--;
             }else{
               // if we are trying to go over another word -> delete all the letters that came before this one
@@ -154,8 +166,8 @@ export class WordsearchComponent implements OnInit {
         case 2:
           //up
           let top = gridRef.toString()[1];
-          /*$("#block"+gridRef).css({"background-color":"red"});
-          $("#block"+top).css({"background-color":"blue"});*/
+          /*$("#block"+gridRef).css({"background-this.color":"red"});
+          $("#block"+top).css({"background-this.color":"blue"});*/
           while ((gridRef-(word.length*10))<parseFloat(top)){
             gridRef+=10;
           }
@@ -171,7 +183,7 @@ export class WordsearchComponent implements OnInit {
                 if(wttaIndex>-1)
                   this.wordsToTryAgain.splice(wttaIndex,1);
               }
-              $("#block"+gridRef).css({"background-color":"red"});
+              $("#block"+gridRef).css({"background-this.color":"red"});
               gridRef-=10;
             }else{
               // if we are trying to go over another word -> delete all the letters that came before this one
@@ -215,7 +227,7 @@ export class WordsearchComponent implements OnInit {
                 if(wttaIndex>-1)
                   this.wordsToTryAgain.splice(wttaIndex,1);
               }
-              $("#block"+gridRef).css({"background-color":"orange"});
+              $("#block"+gridRef).css({"background-this.color":"orange"});
               gridRef+=10;
             }else{
               // if we are trying to go over another word -> delete all the letters that came before this one
@@ -254,78 +266,260 @@ export class WordsearchComponent implements OnInit {
     return;
   }
 
-  // $(".block").click(function(){
-  //   console.log("FIRING AGAIN");
-  //     let gridRef = parseInt($(this).attr("id").split("block")[1]);
-  //     HighlightSquare(gridRef);
-  //     let gridRefX = (gridRef%10)+1;
-  //     let gridRefY = Math.ceil(gridRef/10);
-  //     console.log("gridRef: "+gridRef+" - gridRefX: "+gridRefX+" - gridRefY: "+gridRefY);
-  //     if(endpoint==1){
-  //       previousGridRef = 0;
-  //       color="yellow";
-  //       endpoint=2;
-  //     }
-  //     else if(endpoint==2){
-  //       color="yellow";
-  //       endpoint=1;
-  //     }
-  //     if(previousGridRef>0){
-  //       let diff = gridRef - previousGridRef;
-  //       let diffX = gridRefX - previousGridRefX;
-  //       let diffY = gridRefY - previousGridRefY;
-  //       console.log("diffX: "+diffX+" - diffY: "+diffY);
-  //       if(diffX==0){
-  //         //legal vertical move
-  //         if(diffY>0){
-  //           for(var t=previousGridRef;t<gridRef;t+=10){
-  //             HighlightSquare(t);
-  //             console.log("HIGHLIGHTING gridRef: "+t);
-  //           }
-  //         }
-  //         else{
-  //           console.log("going up");
-  //           console.log("gridRef: "+gridRef+" - previousGridRef: "+previousGridRef);
-  //           for(let j=previousGridRef ; j>gridRef ; j-=10){
-  //             HighlightSquare(j);
-  //           }
-  //         }
-  //       }
-  //       if(diffY==0){
-  //         //legal horizontal move
-  //         if(diffX>0){
-  //           for(var t=previousGridRef;t<gridRef;t++){
-  //             HighlightSquare(t);
-  //             console.log("HIGHLIGHTING gridRef: "+t);
-  //           }
-  //         }
-  //         else{
-  //           console.log("gridRef: "+gridRef+" - previousGridRef: "+previousGridRef);
-  //           for(let j=previousGridRef ; j>gridRef ; j--){
-  //             HighlightSquare(j);
-  //           }
-  //         }
-  //       }
-  //       else if(diffX!=0 && diffY!=0){
-  //         //illegal move
-  //         console.log("illegal move");
+  HighlightSquare(gridRef){
+    $("#block"+gridRef).addClass("highlighted");
+  }
+
+  RemoveHighlightSquare(gridRef){
+    $("#block"+gridRef).removeClass("highlighted");
+  }
+
+  clickEventListener() {
+    let thisObj = this;
+    $(".block").click(function(){
+      console.log("FIRING AGAIN");
+      let gridRef = parseInt($(this).attr("id").split("block")[1]);
+      thisObj.HighlightSquare(gridRef);
+      let gridRefX = (gridRef%10)+1;
+      let gridRefY = Math.ceil(gridRef/10);
+      console.log("gridRef: "+gridRef+" - gridRefX: "+gridRefX+" - gridRefY: "+gridRefY);
+      if(thisObj.endpoint==1){
+        thisObj.previousGridRef = 0;
+        thisObj.color="yellow";
+        thisObj.endpoint=2;
+      }
+      else if(thisObj.endpoint==2){
+        thisObj.color="yellow";
+        thisObj.endpoint=1;
+      }
+      if(thisObj.previousGridRef>0){
+        let diff = gridRef - thisObj.previousGridRef;
+        let diffX = gridRefX - thisObj.previousGridRefX;
+        let diffY = gridRefY - thisObj.previousGridRefY;
+        console.log("diffX: "+diffX+" - diffY: "+diffY);
+        let checkedLetters = [];
+        if(diffX==0){
+          //legal vertical move
+          if(diffY>0){
+            for(var t=thisObj.previousGridRef;t<=gridRef;t+=10){
+              thisObj.HighlightSquare(t);
+              // check if the letters are a word
+              checkedLetters.push($("#block"+t).html());
+            }
+            let checkedWord = checkedLetters.join("");
+            let checkedWordBackwards = checkedLetters.reverse().join("");
+            console.log("checkedWord: "+checkedWord);
+            console.log("checkedwordBackwards: "+checkedWordBackwards);
+            // check each word to see if it matches either checkedWord or checkedWordBackwards
+            let foundWord = "";
+            let found = false;
+            let words = thisObj.removeDuplicates(thisObj.originalWords);
+            words.forEach((word)=>{
+              console.log("now checking: "+word);
+              if(word == checkedWord){
+                found = true;
+                foundWord = word;
+                console.log("found "+word+"!");
+                console.log("found was: "+found);
+              }
+              else if(word==checkedWordBackwards){
+                found = true;
+                foundWord = word;
+                console.log("found "+word+"!");
+                console.log("found was: "+found);
+              }
+              else{
+                console.log(word+" not found");
+                console.log("found was: "+found);
+                console.log(words);
+              }
+            });
+            console.log("found: "+found);
+            if(found){
+              alert("correct! the word was "+foundWord);
+            }else{
+              alert("that was not a word");
+            }
+          }
+          else{
+            console.log("going up");
+            console.log("gridRef: "+gridRef+" - this.previousGridRef: "+thisObj.previousGridRef);
+            for(let j=thisObj.previousGridRef ; j>gridRef ; j-=10){
+              thisObj.HighlightSquare(j);
+            }
+          }
+          if(diffY<0){
+            for(var t=thisObj.previousGridRef;t>=gridRef;t-=10){
+              thisObj.HighlightSquare(t);
+              // check if the letters are a word
+              checkedLetters.push($("#block"+t).html());
+            }
+            let checkedWord = checkedLetters.join("");
+            let checkedWordBackwards = checkedLetters.reverse().join("");
+            console.log("checkedWord: "+checkedWord);
+            console.log("checkedwordBackwards: "+checkedWordBackwards);
+            // check each word to see if it matches either checkedWord or checkedWordBackwards
+            let foundWord = "";
+            let found = false;
+            let words = thisObj.removeDuplicates(thisObj.originalWords);
+            words.forEach((word)=>{
+              console.log("now checking: "+word);
+              if(word == checkedWord){
+                found = true;
+                foundWord = word;
+                console.log("found "+word+"!");
+                console.log("found was: "+found);
+              }
+              else if(word==checkedWordBackwards){
+                found = true;
+                foundWord = word;
+                console.log("found "+word+"!");
+                console.log("found was: "+found);
+              }
+              else{
+                console.log(word+" not found");
+                console.log("found was: "+found);
+                console.log(words);
+              }
+            });
+            console.log("found: "+found);
+            if(found){
+              alert("correct! the word was "+foundWord);
+            }else{
+              alert("that was not a word");
+            }
+          }
+          else{
+            console.log("going up");
+            console.log("gridRef: "+gridRef+" - this.previousGridRef: "+thisObj.previousGridRef);
+            for(let j=thisObj.previousGridRef ; j>gridRef ; j+=10){
+              thisObj.HighlightSquare(j);
+            }
+          }
+        }
+        if(diffY==0){
+          //legal horizontal move
+          if(diffX>0){
+            for(var t=thisObj.previousGridRef;t<=gridRef;t++){
+              thisObj.HighlightSquare(t);
+              checkedLetters.push($("#block"+t).html());
+              console.log("this.highlighting gridRef: "+t);
+            }
+            let checkedWord = checkedLetters.join("");
+            let checkedWordBackwards = checkedLetters.reverse().join("");
+            console.log("checkedWord: "+checkedWord);
+            console.log("checkedwordBackwards: "+checkedWordBackwards);
+            // check each word to see if it matches either checkedWord or checkedWordBackwards
+            let foundWord = "";
+            let found = false;
+            let words = thisObj.removeDuplicates(thisObj.originalWords);
+            words.forEach((word)=>{
+              console.log("now checking: "+word);
+              if(word == checkedWord){
+                found = true;
+                foundWord = word;
+                console.log("found "+word+"!");
+                console.log("found was: "+found);
+              }
+              else if(word==checkedWordBackwards){
+                found = true;
+                foundWord = word;
+                console.log("found "+word+"!");
+                console.log("found was: "+found);
+              }
+              else{
+                console.log(word+" not found");
+                console.log("found was: "+found);
+                console.log(words);
+              }
+            });
+            console.log("found: "+found);
+            if(found){
+              alert("correct! the word was "+foundWord);
+            }else{
+              alert("that was not a word");
+            }
+          }
+          if(diffX<0){
+            for(var t=thisObj.previousGridRef;t>=gridRef;t--){
+              thisObj.HighlightSquare(t);
+              checkedLetters.push($("#block"+t).html());
+              console.log("this.highlighting gridRef: "+t);
+            }
+            let checkedWord = checkedLetters.join("");
+            let checkedWordBackwards = checkedLetters.reverse().join("");
+            console.log("checkedWord: "+checkedWord);
+            console.log("checkedwordBackwards: "+checkedWordBackwards);
+            // check each word to see if it matches either checkedWord or checkedWordBackwards
+            let foundWord = "";
+            let found = false;
+            let words = thisObj.removeDuplicates(thisObj.originalWords);
+            words.forEach((word)=>{
+              console.log("now checking: "+word);
+              if(word == checkedWord){
+                found = true;
+                foundWord = word;
+                console.log("found "+word+"!");
+                console.log("found was: "+found);
+              }
+              else if(word==checkedWordBackwards){
+                found = true;
+                foundWord = word;
+                console.log("found "+word+"!");
+                console.log("found was: "+found);
+              }
+              else{
+                console.log(word+" not found");
+                console.log("found was: "+found);
+                console.log(words);
+              }
+            });
+            console.log("found: "+found);
+            if(found){
+              alert("correct! the word was "+foundWord);
+            }else{
+              alert("that was not a word");
+            }
+          }
+          else{
+            console.log("gridRef: "+gridRef+" - this.previousGridRef: "+thisObj.previousGridRef);
+            for(let j=thisObj.previousGridRef ; j>gridRef ; j--){
+              thisObj.HighlightSquare(j);
+            }
+          }
+        }
+        else if(diffX!=0 && diffY!=0){
+          //illegal move
+          thisObj.RemoveHighlightSquare(thisObj.previousGridRef);
+          console.log("illegal move");
           
-  //       }
-  
+        }
+
         
-  //     }
-  //     previousGridRef = gridRef;
-  //     previousGridRefX = gridRefX;
-  //     previousGridRefY = gridRefY;
-  //     highlighting=true;
-    
-  // });
+      }
+      thisObj.previousGridRef = gridRef;
+      thisObj.previousGridRefX = gridRefX;
+      thisObj.previousGridRefY = gridRefY;
+      thisObj.highlighting=true;
+    });
+  }
 
   ChooseRandomLetter(){
     let index = Math.random()*25;
     let letter = this.letters[Math.round(index)];
     return letter;
   }
+
+  // from https://codehandbook.org/how-to-remove-duplicates-from-javascript-array/
+  removeDuplicates(arr){
+    let unique_array = []
+    for(let i = 0;i < arr.length; i++){
+        if(unique_array.indexOf(arr[i]) == -1){
+            unique_array.push(arr[i])
+        }
+    }
+    return unique_array
+}
 
 }
 
