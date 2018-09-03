@@ -18,7 +18,7 @@
 		<a [routerLink]="['/profile',friend.userId,friend.username,'t']">
 			<p>{{ friend.username }}</p>
 			<p class="message-indicator">2</p>
-			<p>Great idea dude! I'll see...</p>
+			<p>{{ friend.lastMessage }}</p>
 			<p class="time-indicator">10:49pm</p>
 			<p *ngIf="friend.loggedIn">Online now!</p>
 			<p *ngIf="!friend.loggedIn">Offline</p>

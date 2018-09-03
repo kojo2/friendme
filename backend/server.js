@@ -73,22 +73,34 @@ app.post('/login/', function(req, res) {
 });
 
 
-app.get('/friends', function(req, res) {
+app.get('/friendsConvos', function(req, res) {
     //console.log(req.body.userid+" requested their friends list");	
     //console.log(req.session);
     let count = 0;
     users.FindFriendsForUser(req.session.user).then(function(friendList) {
         if (friendList) {
+            let friendListArr = [];
             for (let i = 0; i < friendList.length; i++) {
-                let friend = friendList[i];
+                let friend = {};
+                friend.userId = friendList[i].userId;
+                friend.username = friendList[i].username;
+                friend.loggedIn = friendList[i].loggedIn;
                 sessions.checkSession(friend.userId).then((result) => {
-                    friendList[i].loggedIn = result;
-                    if (count == friendList.length) {
-                        if (!res.headersSent)
-                            res.send(friendList);
-                    }
-                });
-                count++;
+                    friend.loggedIn = result;
+                    conversations.GetConversation(friend.userId,req.session.user).then((result2)=>{
+                        let lastMessage = result2.messages[result2.messages.length-1].message;
+                        friend.lastMessage = lastMessage;
+                        console.log(friend);
+                        friendListArr.push(friend);
+                        if (count == friendList.length) {
+                            if (!res.headersSent){
+                                console.log(friendListArr);
+                                res.send(friendListArr);
+                            }
+                        }
+                    });
+                    count++;
+                });    
             }
         } else {
             res.send("err");

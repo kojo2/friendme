@@ -18,13 +18,38 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.name = this.capitalize(localStorage.getItem('username'));
-  	this.usersService.findFriends().subscribe(friends => this.friends = friends);
+    
+  	this.usersService.findFriends().subscribe((friends) => {
+      let friendsArr = [];
+        friends.forEach((friend)=>{
+        var length = friend.lastMessage.length;
+        if(length>50){
+          friend.lastMessage = friend.lastMessage.substr(0,50)+"...";
+        }
+        friend.lastMessage = friend.lastMessage;  
+        friendsArr.push(friend);
+      });
+      this.friends = friendsArr;
+    });
   	this.usersService.getFriendRequests().subscribe(results=>{
       if(results)
         this.friendRequests=results;
     });
     let thisObj = this;
-    setInterval(function(){thisObj.usersService.findFriends().subscribe(friends => thisObj.friends = friends)},3000);
+    window.setInterval(function(){
+      thisObj.usersService.findFriends().subscribe((friends) => {
+        let friendsArr = [];
+        friends.forEach((friend)=>{
+          var length = friend.lastMessage.length;
+          if(length>50){
+            friend.lastMessage = friend.lastMessage.substr(0,50)+"...";
+          }
+          friend.lastMessage = friend.lastMessage;  
+          friendsArr.push(friend);
+        });
+        this.friends = friendsArr;
+     });
+    },3000);
   }
 
   capitalize(str) {

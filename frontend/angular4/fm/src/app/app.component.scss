@@ -1,13 +1,13 @@
 $bg-color: #01091a;
-// body{
-// 	background-color: $bg-color;
-// 	color:white;
-// 	min-height:100vh;
-// 	font-family: Segoe UI Emoji;
-// }
-// body.bg-picture {
-// 	background-image: url('/assets/images/smileys-mobile.jpg');
-// 	background-size: contain;
-// 	background-position: center bottom;
-// 	background-repeat: no-repeat;
-// }
+body{
+	background-color: $bg-color;
+	color:white;
+	min-height:100vh;
+	font-family: Segoe UI Emoji;
+}
+body.bg-picture {
+	background-image: url('/assets/images/smileys-mobile.jpg');
+	background-size: contain;
+	background-position: center bottom;
+	background-repeat: no-repeat;
+}
