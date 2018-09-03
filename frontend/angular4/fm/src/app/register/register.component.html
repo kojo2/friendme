@@ -1,10 +1,13 @@
 <form #f="ngForm" (ngSubmit)="submit(f)" (change)="change(f)">
-	<label>Username:</label><input ngModel name="username" #username="ngModel"><br>
-	<label style="color:red" *ngIf="userExists">Username already exists!</label><br>
-	<label>Postcode:</label>
-	<input type="text" ngModel name="location" #location="ngModel">
-	<label>Password:</label>
-	<input name="password" ngModel #password="ngModel">
-	<input type="submit">
-	{{ message }}
+    <label>Username:</label><input ngModel name="username" #username="ngModel"><br>
+    <label style="color:red" *ngIf="userExists">Username already exists!</label><br>
+    <label>Postcode:</label>
+    <input type="text" ngModel name="location" #location="ngModel">
+    <label>About me</label>
+    <textarea name="aboutMe" ngModel #aboutMe="ngModel"></textarea>
+    <label>Likes and dislikes</label>
+    <textarea name="ldislikes" ngModel #ldislikes="ngModel"></textarea>
+    <label>Password:</label>
+    <input name="password" ngModel #password="ngModel">
+    <input type="submit"> {{ message }}
 </form>

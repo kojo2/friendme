@@ -17,6 +17,8 @@ export class RegisterComponent implements OnInit {
 	locationObj;
 
 	message;
+	aboutMe;
+	ldislikes;
 
 	constructor(private service:UsersService){
 
@@ -56,7 +58,7 @@ export class RegisterComponent implements OnInit {
 		else {
 			console.log("this is what im sending to the server");
 			console.log(loc);
-			this.service.createUser(f.value.username,f.value.password,loc).subscribe(response=>{
+			this.service.createUser(f.value.username,f.value.password,f.value.aboutMe, f.value.ldislikes,loc).subscribe(response=>{
 				console.log(response);
 				alert(response);
 			});

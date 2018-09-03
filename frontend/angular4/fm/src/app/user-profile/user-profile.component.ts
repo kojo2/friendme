@@ -13,6 +13,7 @@ export class UserProfileComponent implements OnInit {
   friend = false;
   id;
   friendRequested = false;
+  profile;
   constructor(private route: ActivatedRoute, private service:UsersService) {
   }
 
@@ -20,9 +21,13 @@ export class UserProfileComponent implements OnInit {
   	this.route.paramMap.subscribe(params=> {
       this.id = params.get('_id');
       console.log("id "+this.id);
-  		this.name = params.get('username');
+      this.name = params.get('username');
+      this.name = this.name[0].toUpperCase()+this.name.slice(1,this.name.length);
   		this.friend = (params.get('friend')=="t");
       this.friendRequested = (params.get('friend')=='r');
+      this.service.getUserProfile(params.get('_id')).subscribe((response)=>{
+        this.profile = response;
+      });
   	})
   }
 

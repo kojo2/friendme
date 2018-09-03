@@ -33,13 +33,17 @@ export class UsersService {
   	return this.http.post('login',{username:username,password:password},true,true);
   }
 
+  getUserProfile(userId){
+    return this.http.get('user/'+userId,true);
+  }
+
   searchAllUsers(distance,position){
     return this.http.post('search',{distance:distance, position:position},true);
   }
 
-  createUser(username,password,loc){
+  createUser(username,password,aboutMe, ldislikes,loc){
   	//return "creating user "+username+" with password: "+password;
-  	return this.http.post('register',{username:username,password:password,loc:loc},false,true);
+  	return this.http.post('register',{username:username,password:password,aboutMe:aboutMe,ldislikes:ldislikes,loc:loc},false,true);
   }
   //did stands for destination user id (who is the request going to?)
   createFriendRequest(id,name){

@@ -3,12 +3,13 @@ import { ViewEncapsulation } from '@angular/core';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
   title = 'app';
   sessionId = "";
+  loggedin = false;
   constructor(){}
 
   back(){
@@ -16,7 +17,7 @@ export class AppComponent {
   }
 
   ngOnInit(){
-  
+    this.loggedin = localStorage.getItem('loggedIn')=='true';
   }
 }
 

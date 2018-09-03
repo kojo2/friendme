@@ -6,7 +6,7 @@ import * as $ from 'jquery';
 @Component({
   selector: 'app-wordsearch',
   templateUrl: './wordsearch.component.html',
-  styleUrls: ['./wordsearch.component.css'],
+  styleUrls: ['./wordsearch.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class WordsearchComponent implements OnInit {

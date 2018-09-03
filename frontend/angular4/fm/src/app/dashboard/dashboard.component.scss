@@ -1,0 +1,66 @@
+//  .logo {
+//   width:45vw;
+//   position: relative;
+//   left:50%;
+//   transform:TranslateX(-50%);
+//   margin-top: 50px;
+//   margin-bottom: 10px;
+// }
+// .logo-container:after {
+//   content: "";
+//   width: 70vw;
+//   margin: auto;
+//   margin-bottom: 50px;
+//   height: 2px;
+//   display: block;
+//   background-color: white;
+// }
+// ul {
+//   list-style-type: none;
+// }
+// ul.friend-list {
+//   background-color:#01091a; 
+//   overflow-y: scroll;
+//   height: 62vh;
+// }
+// li.friend-conversation {
+//   padding: 5px 10px;
+// }
+// li.friend-conversation a {
+//   color:white;
+//   text-decoration: none;
+//   text-transform: capitalize;
+// }
+// li.friend-conversation a:before {
+//   content: "";
+//   width:70px;
+//   height:70px;
+//   float: left;
+//   margin-right: 20px;
+//   background-color: white;
+//   background-image: url('/assets/images/Anon-Person.png');
+//   border-radius: 100%;
+//   background-size: contain;
+//   position: relative;
+//   top: 15px;
+// }
+// li.friend-conversation p {
+//   white-space: nowrap;
+// }
+// li.friend-conversation .message-indicator {
+//   float: right;
+//   background-color: #3386d3;
+//   border-radius: 100%;
+//   padding: 1px 5px 1px 7px;
+//   position: relative;
+//   top: -50px;
+//   font-size: 14px;
+//   font-weight: bold;
+// }
+// li.friend-conversation .time-indicator {
+//   float: right;
+//   position: relative;
+//   top:-20px;
+//   left: 10px;
+//   font-size: 11px;
+// }
