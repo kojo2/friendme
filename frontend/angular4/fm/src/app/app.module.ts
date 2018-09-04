@@ -18,6 +18,7 @@ import { HttpService } from './http.service';
 import { HangmanGameComponent } from './hangman-game/hangman-game.component';
 import { WordsearchComponent } from './wordsearch/wordsearch.component';
 import { PongComponent } from './pong/pong.component';
+import { FileUploadComponent } from './file-upload/file-upload.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { PongComponent } from './pong/pong.component';
     RegisterComponent,
     HangmanGameComponent,
     WordsearchComponent,
-    PongComponent
+    PongComponent,
+    FileUploadComponent
   ],
   imports: [
     BrowserModule,
@@ -78,6 +80,10 @@ import { PongComponent } from './pong/pong.component';
         {
             path:'register',
             component: RegisterComponent
+        },
+        {
+            path:'upload',
+            component: FileUploadComponent
         }
     ])
   ],

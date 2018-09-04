@@ -1,29 +1,29 @@
 <div class="logo-container">
-		<img src="assets/images/friendMeLogo.png" class="logo">
-	</div>
-	<h1>Hi {{ name }}</h1>
+    <img src="assets/images/friendMeLogo.png" class="logo">
+</div>
+<h1>Hi {{ name }}</h1>
 <div *ngIf="friendRequests?.length > 0">
-	<p>You have {{ friendRequests.length }} friendRequests</p>
-	<ul>
-		<li *ngFor="let friendRequest of friendRequests">
-			<a [routerLink]="['/profile',friendRequest.userid,friendRequest.username,'r']">
+    <p>You have {{ friendRequests.length }} friendRequests</p>
+    <ul>
+        <li *ngFor="let friendRequest of friendRequests">
+            <a [routerLink]="['/profile',friendRequest.userid,friendRequest.username,'r']">
 				{{ friendRequest.username }}
 			</a>
-		</li>
-	</ul>
+        </li>
+    </ul>
 </div>
-<div class="me-pic"><img src="/assets/images/Anon-Person.png" width="100px"/></div>
+<div class="me-pic"><img src="/assets/images/Anon-Person.png" width="100px" /></div>
 <ul class="friend-list">
-	<li class="friend-conversation" *ngFor="let friend of friends">
-		<a [routerLink]="['/profile',friend.userId,friend.username,'t']">
-			<p>{{ friend.username }}</p>
-			<p class="message-indicator">2</p>
-			<p>{{ friend.lastMessage }}</p>
-			<p class="time-indicator">10:49pm</p>
-			<p *ngIf="friend.loggedIn">Online now!</p>
-			<p *ngIf="!friend.loggedIn">Offline</p>
-		</a>
-	</li>
+    <li class="friend-conversation" [class.online]="friend.loggedIn" *ngFor="let friend of friends">
+        <a [routerLink]="['/profile',friend.userId,friend.username,'t']">
+            <p>{{ friend.username }}</p>
+            <p class="message-indicator">2</p>
+            <p>{{ friend.lastMessage }}</p>
+            <p class="time-indicator">{{ friend.timeStamp }}</p>
+            <!-- <p *ngIf="friend.loggedIn">Online now!</p>
+            <p *ngIf="!friend.loggedIn">Offline</p> -->
+        </a>
+    </li>
 </ul>
 <a><i class="fa fa-cog"></i></a>
 <a [routerLink]="['/search']"><i class="fa fa-search"></i></a>

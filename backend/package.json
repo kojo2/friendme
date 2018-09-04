@@ -15,9 +15,12 @@
     "cors": "^2.8.4",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
+    "formidable": "^1.2.1",
     "google-distance-matrix": "^1.1.1",
     "mongoose-auto-increment": "^5.0.1",
+    "node-datetime": "^2.1.0",
     "node-geocoder": "^3.22.0",
+    "quickthumb": "0.0.12",
     "random-words": "^1.0.0",
     "websocket": "^1.0.26",
     "ws": "^5.1.1"

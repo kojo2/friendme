@@ -7,6 +7,11 @@ const sessions = require('./Models/sessions');
 const webSocket = require('websocket');
 const { validateLoc } = require('./validateLoc');
 var expressSession = require('express-session');
+const formidable = require('formidable');
+const IncomingForm = require('formidable').IncomingForm;
+const fs = require('fs-extra');
+const util = require('util');
+const qt = require('quickthumb');
 var mongoStore = require('connect-mongo')({ session: expressSession });
 //const cors = require('cors');
 
@@ -26,6 +31,7 @@ var WebSocketServer = webSocket.server;
 
 
 app.use(express.json());
+app.use(qt.static(__dirname + '/'));
 
 // set up body parser middlware
 
@@ -80,6 +86,7 @@ app.get('/friendsConvos', function(req, res) {
     users.FindFriendsForUser(req.session.user).then(function(friendList) {
         if (friendList) {
             let friendListArr = [];
+            //console.log(friendList.length);
             for (let i = 0; i < friendList.length; i++) {
                 let friend = {};
                 friend.userId = friendList[i].userId;
@@ -87,20 +94,25 @@ app.get('/friendsConvos', function(req, res) {
                 friend.loggedIn = friendList[i].loggedIn;
                 sessions.checkSession(friend.userId).then((result) => {
                     friend.loggedIn = result;
-                    conversations.GetConversation(friend.userId,req.session.user).then((result2)=>{
-                        let lastMessage = result2.messages[result2.messages.length-1].message;
+                    conversations.GetConversation(friend.userId, req.session.user).then((result2) => {
+                        let lastMessage = result2.messages[result2.messages.length - 1].message;
                         friend.lastMessage = lastMessage;
-                        console.log(friend);
+                        //console.log("friend was: " + result2);
+                        friend.timeStamp = result2.updatedAt;
+                        //console.log(friend);
                         friendListArr.push(friend);
-                        if (count == friendList.length) {
-                            if (!res.headersSent){
-                                console.log(friendListArr);
+                        if (count == friendList.length - 1) {
+                            friendListArr.sort((a, b) => {
+                                return a.userId - b.userId
+                            });
+                            if (!res.headersSent) {
                                 res.send(friendListArr);
                             }
                         }
+                        count++;
                     });
-                    count++;
-                });    
+                });
+
             }
         } else {
             res.send("err");
@@ -227,6 +239,15 @@ app.get('/logout', function(req, res) {
     res.send("sucess");
 });
 
+app.post('/upload', function(req, res) {
+    var form = new IncomingForm();
+    form.on('file', (field, file) => {
+        console.log("hey we received a file, how sexy is that?!!!");
+    });
+
+    form.on('end', () => res.send("successfully received file, thanks!"));
+    form.parse(req);
+});
 
 
 
@@ -259,6 +280,8 @@ wsServer = new WebSocketServer({
 
 var connections = [];
 
+var datetime = require('node-datetime');
+
 wsServer.on('request', function(r) {
 
     sessionParser(r.httpRequest, {}, function() {
@@ -270,6 +293,8 @@ wsServer.on('request', function(r) {
             connections.push({ connection: connection, userid: user });
             connection.on('message', function(packet) {
                 let packetObj = JSON.parse(packet.utf8Data);
+                var dt = datetime.create();
+                var formatted = dt.format('H:M:S');
                 let otherUser = packetObj.otherUser;
                 let message = packetObj.message;
                 if (message == "initial") {
@@ -284,7 +309,7 @@ wsServer.on('request', function(r) {
                 // cycle through the connections to find the other person's connection so we can send the message to them
                 connections.forEach((c) => {
                     if (c.userid == otherUser) {
-                        c.connection.sendUTF(username + " says: " + message);
+                        c.connection.sendUTF(dt + ":" + username + " says: " + message);
                         console.log("sending message from userid: " + user + " to userid: " + otherUser);
                         console.log("the message is: " + message);
                         console.log("found userid " + otherUser + " at id: " + c.userid + "!");

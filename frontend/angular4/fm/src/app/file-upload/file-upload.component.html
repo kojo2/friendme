@@ -1,0 +1,10 @@
+<form #f="ngForm" (ngSubmit)="send(f)">
+    Add a title:
+    <input name="title" ngModel #title="ngModel" type="text" />
+    <br>
+    <br>
+    <input type="file" #file (change)="selectFile($event)" />
+    <br>
+    <br>
+    <input type=" submit " value="upload " />
+</form>
