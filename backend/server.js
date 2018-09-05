@@ -92,27 +92,44 @@ app.get('/friendsConvos', function(req, res) {
                 friend.userId = friendList[i].userId;
                 friend.username = friendList[i].username;
                 friend.loggedIn = friendList[i].loggedIn;
-                sessions.checkSession(friend.userId).then((result) => {
-                    friend.loggedIn = result;
-                    conversations.GetConversation(friend.userId, req.session.user).then((result2) => {
-                        let lastMessage = result2.messages[result2.messages.length - 1].message;
-                        friend.lastMessage = lastMessage;
-                        //console.log("friend was: " + result2);
-                        friend.timeStamp = result2.updatedAt;
-                        //console.log(friend);
-                        friendListArr.push(friend);
-                        if (count == friendList.length - 1) {
-                            friendListArr.sort((a, b) => {
-                                return a.userId - b.userId
-                            });
-                            if (!res.headersSent) {
-                                res.send(friendListArr);
-                            }
-                        }
-                        count++;
-                    });
-                });
+                try {
+                    users.GetAvatarForUser(friend.userId).then((avatar) => {
+                        friend.avatar = avatar;
+                        sessions.checkSession(friend.userId).then((result) => {
+                            friend.loggedIn = result;
+                            conversations.GetConversation(friend.userId, req.session.user).then((result2) => {
+                                let lastMessage;
+                                try {
+                                    lastMessage = result2.messages[result2.messages.length - 1].message;
+                                } catch (error) {
+                                    lastMessage = "";
+                                }
+                                friend.lastMessage = lastMessage;
+                                //console.log("friend was: " + result2);
+                                try {
+                                    friend.timeStamp = result2.updatedAt;
+                                } catch (error) {
+                                    friend.timeStamp = "";
+                                }
 
+                                //console.log(friend);
+                                friendListArr.push(friend);
+                                if (count == friendList.length - 1) {
+                                    friendListArr.sort((a, b) => {
+                                        return a.userId - b.userId
+                                    });
+                                    if (!res.headersSent) {
+                                        res.send(friendListArr);
+                                    }
+                                }
+                                count++;
+                            });
+                        });
+                    });
+                } catch (error) {
+                    // continue the loop as the friend can't be found on the system
+                    continue;
+                }
             }
         } else {
             res.send("err");
@@ -161,7 +178,7 @@ app.post('/register/', function(req, res) {
 
 app.get('/friends/add', function(req, res) {
     users.AddFriendForUser(req.session.id, req.body.fid).then(result => {
-        return users.DeleteFriendRequest(req.session.user, req.body.fid);
+        users.DeleteFriendRequest(req.session.user, req.body.fid);
     })
 });
 
@@ -240,16 +257,19 @@ app.get('/logout', function(req, res) {
 });
 
 app.post('/upload', function(req, res) {
-    var form = new IncomingForm();
-    form.on('file', (field, file) => {
-        console.log("hey we received a file, how sexy is that?!!!");
+    if (!req.session) {
+        res.send("You must be logged in to do this");
+        console.log("user wasn't logged in");
+    }
+    users.AddAvatar(req.session.user, req.body.file).then((response) => {
+        res.send(response);
+        console.log("response was: " + response);
     });
-
-    form.on('end', () => res.send("successfully received file, thanks!"));
-    form.parse(req);
 });
 
-
+app.get('/avatar', function(req, res) {
+    users.GetAvatarForUser(req.session.user).then((avatar) => res.send(avatar));
+});
 
 //get('register','registering new user');
 

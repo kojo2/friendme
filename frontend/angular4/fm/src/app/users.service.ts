@@ -58,6 +58,8 @@ export class UsersService {
   logout(){
     return this.http.get('logout',true,true);
   }
-
+  getMyAvatar() {
+    return this.http.get('avatar',true,true);
+  }
 
 }

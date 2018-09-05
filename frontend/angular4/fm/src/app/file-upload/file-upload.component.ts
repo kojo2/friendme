@@ -14,57 +14,37 @@ export class FileUploadComponent implements OnInit {
 
   constructor(private service:UploadService) { }
 
+  
+
   ngOnInit() {
   }
 
    selectFile(event) {
-     this.uploadFile(event.target.files);
+     //this.uploadFile(event.target.files,this);
+     this.encodeImageFileAsURL(event.target,this);
    }
   
-  uploadFile(files: FileList) {
+  uploadFile(files: FileList, thisObj) {
     if (files.length == 0) {
       console.log("No file selected!");
       return
   
     }
     let file: File = files[0];
-    this.sendFile(file);
     
-  
-    // this.upload.uploadFile("localhost:8080/upload", file)
-    //   .subscribe(
-    //     event => {
-    //       if (event.type == HttpEventType.UploadProgress) {
-    //         const percentDone = Math.round(100 * event.loaded / event.total);
-    //         console.log(`File is ${percentDone}% loaded.`);
-    //       } else if (event instanceof HttpResponse) {
-    //         console.log('File is completely loaded!');
-    //       }
-    //     },
-    //     (err) => {
-    //       console.log("Upload Error:", err);
-    //     }, () => {
-    //       console.log("Upload done");
-    //     }
-    //   )
+    //this.encodeImageFileAsURL(file);
   }
   
-  sendFile(file: File) {
-
-    let formData = new FormData();
-    formData.append('upload', file);
-
-    this.service.upload(file).subscribe((response)=>alert(response));
-
-    // let params = new HttpParams();
-
-    // const options = {
-    //   params: params,
-    //   reportProgress: true,
-    // };
-
-    //const req = new HttpRequest('POST', url, formData, options);
-    //return this.http.request(req);
+  encodeImageFileAsURL(element,thisObj) {
+    var file = element.files[0];
+    var reader = new FileReader();
+    reader.onloadend = function() {
+      console.log('RESULT', reader.result)
+      thisObj.service.upload(reader.result).subscribe((response)=>{
+        alert(response);
+      })
+    }
+    reader.readAsDataURL(file);
   }
+    
 }
-

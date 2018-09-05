@@ -7,6 +7,17 @@
      margin-bottom: 10px;
  }
  
+ .personal {
+     width: 100vw;
+     text-align: center;
+ }
+ 
+ img:not(.logo) {
+     border-radius: 100%;
+     width: 100px;
+     height: 100px;
+ }
+ 
  .logo-container:after {
      content: "";
      width: 70vw;
@@ -23,13 +34,19 @@
  
  ul.friend-list {
      background-color: #01091a;
-     overflow-y: scroll;
+     overflow-y: hidden;
      height: 62vh;
  }
  
  li.friend-conversation {
      padding: 5px 10px;
      opacity: 0.2;
+     min-height: 80px;
+ }
+ 
+ .lmEmpty {
+     color: grey;
+     font-size: 13px;
  }
  
  li.friend-conversation a {
@@ -38,7 +55,7 @@
      text-transform: capitalize;
  }
  
- li.friend-conversation a:before {
+ li.friend-conversation img {
      content: "";
      width: 70px;
      height: 70px;

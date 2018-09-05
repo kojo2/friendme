@@ -10,6 +10,6 @@ export class UploadService {
   constructor(private http:HttpService) { }
 
   upload(file){
-    return this.http.post('upload',{file:file},false,true);
+    return this.http.post('upload',{file:file},true,true);
   }
 }

@@ -7,6 +7,7 @@ const schema = new mongoose.Schema({
     password: 'string',
     aboutMe: 'string',
     ldislikes: 'string',
+    avatar: 'string',
     friendList: [{ userId: Number, username: String, loggedIn: { type: Boolean, Default: false } }],
     friendRequests: [{ userid: Number, username: String }],
     loc: {
@@ -115,6 +116,7 @@ exports.CreateFriendRequest = function(destinationId, userId, username) {
 }
 
 exports.DeleteFriendRequest = function(sessionUserId, userId) {
+    console.log("deleting friend request from " + userId);
     return User.update({ _id: sessionUserId }, { $pull: { friendRequests: { userid: userId } } });
 }
 
@@ -124,4 +126,21 @@ exports.GetFriendRequests = function(userId) {
             return err;
         return user.friendRequests;
     });
+}
+
+exports.AddAvatar = function(userId, avatar) {
+    return User.update({ _id: userId }, { avatar: avatar });
+}
+
+exports.GetAvatarForUser = function(userId) {
+    try {
+        return User.findOne({ "_id": userId }).then((user) => {
+            if (user)
+                return user.avatar;
+            else
+                return "";
+        });
+    } catch (err) {
+        return err;
+    }
 }

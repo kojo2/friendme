@@ -14,6 +14,7 @@ export class DashboardComponent implements OnInit {
 	friends;
 	friendRequests;
   name;
+  avatar = "";
 
   constructor(private usersService:UsersService, private router:Router) { }
 
@@ -21,7 +22,7 @@ export class DashboardComponent implements OnInit {
     this.name = this.capitalize(localStorage.getItem('username'));
     
     this.getFriends();
-  	
+  	this.getMyAvatar();
   	this.usersService.getFriendRequests().subscribe(results=>{
       if(results)
         this.friendRequests=results;
@@ -50,27 +51,40 @@ export class DashboardComponent implements OnInit {
     this.usersService.findFriends().subscribe((friends) => {
       let friendsArr = [];
         friends.forEach((friend)=>{
+        friend.lmEmpty = false;
         var length = friend.lastMessage.length;
         if(length>50){
           friend.lastMessage = friend.lastMessage.substr(0,50)+"...";
         }
         var dt = friend.timeStamp;
-        dt = dt.split("T")[1].split(":");
-        var ap;
-        if(dt[1]>12){
-          dt[1]=parseInt(dt[1])-12;
-          ap="pm";
-        }else{
-          dt[1]=dt[1][0];
-          ap="am";
+        try {
+          dt = dt.split("T")[1].split(":");
+          var ap;
+          if(dt[1]>12){
+            dt[1]=parseInt(dt[1])-12;
+            ap="pm";
+          }else{
+            dt[1]=dt[1][0];
+            ap="am";
+          }
+          dt = dt[0]+":"+dt[1]+ap;
+          friend.timeStamp = dt;
         }
-        dt = dt[0]+":"+dt[1]+ap;
-        friend.timeStamp = dt;
-        friend.lastMessage = friend.lastMessage;  
+        catch(err){
+          friend.timeStamp = "";
+        }
+        if(friend.lastMessage==""){
+          friend.lastMessage = "You haven't spoken to this person yet";
+          friend.lmEmpty = true;
+        }
         friendsArr.push(friend);
         console.log(friendsArr);
       });
       this.friends = friendsArr;
     });
+  }
+
+  getMyAvatar(){
+    this.usersService.getMyAvatar().subscribe((avatar)=>this.avatar = avatar);
   }
 }
