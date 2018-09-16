@@ -8,9 +8,6 @@ import { UploadService } from '../upload.service';
   styleUrls: ['./file-upload.component.scss']
 })
 export class FileUploadComponent implements OnInit {
-  // this code is from https://stackoverflow.com/questions/40214772/file-upload-in-angular
-  // by Tarion
-  // accessed 05/08/2018
 
   constructor(private service:UploadService) { }
 
@@ -20,7 +17,6 @@ export class FileUploadComponent implements OnInit {
   }
 
    selectFile(event) {
-     //this.uploadFile(event.target.files,this);
      this.encodeImageFileAsURL(event.target,this);
    }
   
@@ -31,8 +27,7 @@ export class FileUploadComponent implements OnInit {
   
     }
     let file: File = files[0];
-    
-    //this.encodeImageFileAsURL(file);
+  
   }
   
   encodeImageFileAsURL(element,thisObj) {

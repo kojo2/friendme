@@ -19,6 +19,7 @@ export class DashboardComponent implements OnInit {
   constructor(private usersService:UsersService, private router:Router) { }
 
   ngOnInit() {
+    //get username out of local storage
     this.name = this.capitalize(localStorage.getItem('username'));
     
     this.getFriends();
@@ -28,11 +29,14 @@ export class DashboardComponent implements OnInit {
         this.friendRequests=results;
     });
     let thisObj = this;
+    // poll the server for changes every 3 seconds, this will mean the friend list showing who's online 
+    // and what the last message received from that friend will be completely live
     window.setInterval(function(){
      thisObj.getFriends();
     },3000);
   }
 
+  // quick capitalize function
   capitalize(str) {
     return str[0].toUpperCase()+str.slice(1,str.length);
   }
@@ -40,6 +44,7 @@ export class DashboardComponent implements OnInit {
   logout(){
     this.usersService.logout().subscribe(response=>{
       console.log(response);
+      // when we log out we tell the server and then reset all the localStorage variables
       localStorage.setItem('loggedIn','false');
       localStorage.setItem('username',null);
       localStorage.setItem('password',null);
@@ -48,16 +53,20 @@ export class DashboardComponent implements OnInit {
   }
 
   getFriends(){
+    // use the user service to find all the friends of the logged in user
     this.usersService.findFriends().subscribe((friends) => {
       let friendsArr = [];
         friends.forEach((friend)=>{
         friend.lmEmpty = false;
         var length = friend.lastMessage.length;
+        // if friend's last message was too long then cut it down so it fits in the window
         if(length>50){
           friend.lastMessage = friend.lastMessage.substr(0,50)+"...";
         }
+        // get the timestamp of the last sent message
         var dt = friend.timeStamp;
         try {
+          // change from 24h time to 12h time. eg 16:00 to 4:00pm
           dt = dt.split("T")[1].split(":");
           var ap;
           if(dt[1]>12){
@@ -85,6 +94,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getMyAvatar(){
+    //get avatar of logged in user
     this.usersService.getMyAvatar().subscribe((avatar)=>this.avatar = avatar);
   }
 }

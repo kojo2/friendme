@@ -305,21 +305,26 @@ var datetime = require('node-datetime');
 wsServer.on('request', function(r) {
 
     sessionParser(r.httpRequest, {}, function() {
+            // get the user details out of the session object hidden inside the httpRequest object
             let user = r.httpRequest.session.user;
             let username = r.httpRequest.session.username;
+            // accept the connection
             var connection = r.accept('echo-protocol', r.origin);
             console.log("userid " + user + " connected to the websocket server");
             connection.send("connected");
+            // add the connection to an array of connections so we can access it later
             connections.push({ connection: connection, userid: user });
+            // when we get a message coming in...
             connection.on('message', function(packet) {
+                // parse the message into a JSON object and save the variables
                 let packetObj = JSON.parse(packet.utf8Data);
-                var dt = datetime.create();
-                var formatted = dt.format('H:M:S');
                 let otherUser = packetObj.otherUser;
                 let message = packetObj.message;
+                // if the message is "initial" it means its the first message the client is sending us
                 if (message == "initial") {
                     console.log("server received the initial message from the connected client");
                     console.log("now we must send back the conversation history");
+                    // get conversation for these two user ids then send the result back to the client with the tag "initial"
                     let identifiers = {
                         ["userid" + user]: username,
                         ["userid" + otherUser]: packetObj.otherUsername
@@ -329,6 +334,7 @@ wsServer.on('request', function(r) {
                 // cycle through the connections to find the other person's connection so we can send the message to them
                 connections.forEach((c) => {
                     if (c.userid == otherUser) {
+                        // loop through the connections and if the users match its the right conversation, so send the message to all concerned
                         c.connection.sendUTF(dt + ":" + username + " says: " + message);
                         console.log("sending message from userid: " + user + " to userid: " + otherUser);
                         console.log("the message is: " + message);
