@@ -30,7 +30,7 @@ export class ChatComponent implements OnInit {
       this.conversationService.createConversation(this.id).subscribe((response)=>{
         let obj = JSON.parse(response);
       });
-      // create new website connection
+      // create new websocket connection
       this.ws = new WebSocket('ws://localhost:1234','echo-protocol');
       let ws = this.ws;
       // on the receive message event...
